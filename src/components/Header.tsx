@@ -8,35 +8,23 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ activeSection }) => {
-  const [isAudioPlaying, setIsAudioPlaying] = useState(true);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const { language, toggleLanguage, t } = useLanguage();
 
   useEffect(() => {
-    // Attempt auto-starting the sacred ambient soundscape on load
-    sacredAudio.start();
+    // Subscribe to real-time audio playback state
+    const unsubscribe = sacredAudio.subscribeState((playing) => {
+      setIsAudioPlaying(playing);
+    });
 
-    // Auto-unlock Web Audio context on the first user interaction (click/touch/scroll/key)
-    const unlockAudioOnGesture = () => {
-      sacredAudio.start();
-      window.removeEventListener('click', unlockAudioOnGesture);
-      window.removeEventListener('touchstart', unlockAudioOnGesture);
-      window.removeEventListener('scroll', unlockAudioOnGesture);
-      window.removeEventListener('keydown', unlockAudioOnGesture);
-    };
-
-    window.addEventListener('click', unlockAudioOnGesture, { passive: true });
-    window.addEventListener('touchstart', unlockAudioOnGesture, { passive: true });
-    window.addEventListener('scroll', unlockAudioOnGesture, { passive: true });
-    window.addEventListener('keydown', unlockAudioOnGesture, { passive: true });
+    // Ensure audio starts or unlocks on initial mount
+    sacredAudio.ensureStarted();
 
     return () => {
-      window.removeEventListener('click', unlockAudioOnGesture);
-      window.removeEventListener('touchstart', unlockAudioOnGesture);
-      window.removeEventListener('scroll', unlockAudioOnGesture);
-      window.removeEventListener('keydown', unlockAudioOnGesture);
+      unsubscribe();
     };
   }, []);
 

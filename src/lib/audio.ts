@@ -1,51 +1,202 @@
 // Sacred Web Audio API Synthesizer Engine
-// Generates ambient organ chords, cathedral tubular bells, celestial flame ignitions, and crystalline sparkles
+// Generates ambient cathedral organ chords, sacred hymn progressions, tubular bells, and celestial flame effects
 
 class SacredAudioEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
-  private isPlaying = false;
-  private organNodes: { osc: OscillatorNode; gain: GainNode }[] = [];
-  private organGain: GainNode | null = null;
-  private lfo: OscillatorNode | null = null;
-  private lfoGain: GainNode | null = null;
+  private isMuted = false;
+  private isRunning = false;
+  private sequenceTimer: number | null = null;
+  private activeVoices: { osc: OscillatorNode; gain: GainNode }[] = [];
+  private listenersAttached = false;
+  private stateChangeListeners: ((isPlaying: boolean) => void)[] = [];
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.setupAutoUnlock();
+    }
+  }
 
   private getContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioCtx) {
-        this.ctx = new AudioCtx();
-        this.masterGain = this.ctx.createGain();
-        this.masterGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
-        this.masterGain.connect(this.ctx.destination);
+        try {
+          this.ctx = new AudioCtx();
+          this.masterGain = this.ctx.createGain();
+          this.masterGain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+          this.masterGain.connect(this.ctx.destination);
+        } catch {
+          // AudioContext init error guard
+        }
       }
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume().catch(() => {});
     }
     return this.ctx;
   }
 
+  public subscribeState(listener: (isPlaying: boolean) => void) {
+    this.stateChangeListeners.push(listener);
+    listener(!this.isMuted && this.isRunning);
+    return () => {
+      this.stateChangeListeners = this.stateChangeListeners.filter(l => l !== listener);
+    };
+  }
+
+  private notifyState() {
+    const isPlaying = !this.isMuted && this.isRunning;
+    this.stateChangeListeners.forEach(l => {
+      try {
+        l(isPlaying);
+      } catch {}
+    });
+  }
+
+  public setupAutoUnlock() {
+    if (this.listenersAttached || typeof window === 'undefined') return;
+    this.listenersAttached = true;
+
+    const unlock = () => {
+      this.ensureStarted();
+    };
+
+    const events = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'click', 'scroll', 'wheel'];
+    events.forEach(evt => {
+      window.addEventListener(evt, unlock, { passive: true, once: false });
+    });
+
+    // Also attempt immediate start on mount
+    setTimeout(() => {
+      this.ensureStarted();
+    }, 100);
+  }
+
+  public ensureStarted() {
+    if (this.isMuted) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(() => {
+        if (!this.isRunning && !this.isMuted) {
+          this.startHymnLoop();
+        }
+        this.notifyState();
+      }).catch(() => {});
+    } else if (ctx.state === 'running') {
+      if (!this.isRunning && !this.isMuted) {
+        this.startHymnLoop();
+      }
+      this.notifyState();
+    }
+  }
+
   public init() {
-    this.getContext();
+    this.ensureStarted();
   }
 
   public getIsPlaying(): boolean {
-    return this.isPlaying;
+    return !this.isMuted && this.isRunning;
   }
 
   public toggleSound(): boolean {
-    if (this.isPlaying) {
+    if (this.isMuted) {
+      this.isMuted = false;
+      this.ensureStarted();
+      return true;
+    } else {
+      this.isMuted = true;
       this.stop();
       return false;
-    } else {
-      this.start();
-      return true;
     }
   }
 
   public start() {
+    this.isMuted = false;
+    this.ensureStarted();
+  }
+
+  private stopCurrentVoices() {
+    if (this.sequenceTimer !== null) {
+      window.clearTimeout(this.sequenceTimer);
+      this.sequenceTimer = null;
+    }
+
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+
+    this.activeVoices.forEach(({ osc, gain }) => {
+      try {
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+        osc.stop(now + 0.85);
+        setTimeout(() => {
+          try {
+            osc.disconnect();
+            gain.disconnect();
+          } catch {}
+        }, 900);
+      } catch {}
+    });
+    this.activeVoices = [];
+  }
+
+  public stop() {
+    this.stopCurrentVoices();
+    this.isRunning = false;
+    this.notifyState();
+  }
+
+  // Sacred Cathedral Hymn Chord Progression Sequence
+  // Hymn of Grace: Cmaj9 -> Am9 -> Fmaj7 -> G7sus4 -> Em7 -> Fmaj9 -> Dm7 -> G7 -> Cmaj
+  private hymnProgression = [
+    {
+      bass: 65.41, // C2
+      chords: [130.81, 196.00, 261.63, 329.63, 493.88, 587.33], // C3, G3, C4, E4, B4, D5 (Cmaj9)
+      duration: 4.8,
+    },
+    {
+      bass: 55.00, // A1
+      chords: [110.00, 164.81, 220.00, 261.63, 329.63, 493.88], // A2, E3, A3, C4, E4, B4 (Am9)
+      duration: 4.8,
+    },
+    {
+      bass: 43.65, // F1
+      chords: [87.31, 130.81, 174.61, 261.63, 329.63, 392.00], // F2, C3, F3, C4, E4, G4 (Fmaj7)
+      duration: 4.8,
+    },
+    {
+      bass: 49.00, // G1
+      chords: [98.00, 146.83, 196.00, 261.63, 293.66, 392.00], // G2, D3, G3, C4, D4, G4 (G7sus4)
+      duration: 4.8,
+    },
+    {
+      bass: 41.20, // E1
+      chords: [82.41, 123.47, 164.81, 246.94, 329.63, 392.00], // E2, B2, E3, B3, E4, G4 (Em7)
+      duration: 4.8,
+    },
+    {
+      bass: 43.65, // F1
+      chords: [87.31, 130.81, 174.61, 261.63, 329.63, 440.00], // F2, C3, F3, C4, E4, A4 (Fmaj9)
+      duration: 4.8,
+    },
+    {
+      bass: 36.71, // D1
+      chords: [73.42, 110.00, 146.83, 220.00, 261.63, 349.23], // D2, A2, D3, A3, C4, F4 (Dm7)
+      duration: 4.8,
+    },
+    {
+      bass: 49.00, // G1
+      chords: [98.00, 146.83, 196.00, 246.94, 293.66, 392.00], // G2, D3, G3, B3, D4, G4 (G7)
+      duration: 4.8,
+    },
+  ];
+
+  private currentChordIndex = 0;
+
+  private startHymnLoop() {
+    if (this.isMuted) return;
     const ctx = this.getContext();
     if (!ctx || !this.masterGain) return;
 
@@ -53,123 +204,137 @@ class SacredAudioEngine {
       ctx.resume().catch(() => {});
     }
 
-    if (this.isPlaying) return;
-    this.isPlaying = true;
+    this.isRunning = true;
+    this.notifyState();
+    this.playNextChord();
+  }
 
+  private playNextChord() {
+    if (this.isMuted || !this.isRunning) return;
+    const ctx = this.getContext();
+    if (!ctx || !this.masterGain) return;
+
+    const chordData = this.hymnProgression[this.currentChordIndex];
+    const now = ctx.currentTime;
+    const duration = chordData.duration;
+
+    // Filter node for cathedral pipe acoustic response
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(750, now);
+    filter.frequency.linearRampToValueAtTime(1100, now + duration * 0.4);
+    filter.frequency.linearRampToValueAtTime(700, now + duration);
+    filter.Q.setValueAtTime(1.5, now);
+
+    const chordMasterGain = ctx.createGain();
+    chordMasterGain.gain.setValueAtTime(0.0001, now);
+    chordMasterGain.gain.linearRampToValueAtTime(0.16, now + 1.2); // Gentle swell
+    chordMasterGain.gain.setValueAtTime(0.16, now + duration - 0.8);
+    chordMasterGain.gain.linearRampToValueAtTime(0.0001, now + duration + 0.3);
+
+    filter.connect(chordMasterGain);
+    chordMasterGain.connect(this.masterGain);
+
+    // 1. Bass Pedal Pipe
+    const bassOsc = ctx.createOscillator();
+    const bassGain = ctx.createGain();
+    bassOsc.type = 'triangle';
+    bassOsc.frequency.setValueAtTime(chordData.bass, now);
+    bassGain.gain.setValueAtTime(0.001, now);
+    bassGain.gain.linearRampToValueAtTime(0.22, now + 0.8);
+    bassGain.gain.setValueAtTime(0.22, now + duration - 0.8);
+    bassGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+    bassOsc.connect(bassGain);
+    bassGain.connect(filter);
+    bassOsc.start(now);
+    bassOsc.stop(now + duration + 0.4);
+    this.activeVoices.push({ osc: bassOsc, gain: bassGain });
+
+    // 2. Harmonic Cathedral Organ Pipes
+    chordData.chords.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+
+      // Alternate Sine & Triangle for warm pipe organ harmonics
+      osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+
+      // Subtle celestial vibrato detune
+      const detuneAmount = (idx % 3 === 0 ? 3 : -2) * (idx + 1) * 0.5;
+      osc.detune.setValueAtTime(detuneAmount, now);
+
+      const voiceAmp = 0.08 / (idx * 0.4 + 1);
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.linearRampToValueAtTime(voiceAmp, now + 1.0 + idx * 0.1);
+      g.gain.setValueAtTime(voiceAmp, now + duration - 0.9);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      osc.connect(g);
+      g.connect(filter);
+      osc.start(now);
+      osc.stop(now + duration + 0.4);
+      this.activeVoices.push({ osc, gain: g });
+    });
+
+    // 3. Occasional soft chime on major phrase roots (first chord of cycle)
+    if (this.currentChordIndex === 0) {
+      this.playSoftBell(1046.5); // High C6
+    }
+
+    // Schedule next chord in progression
+    this.currentChordIndex = (this.currentChordIndex + 1) % this.hymnProgression.length;
+    this.sequenceTimer = window.setTimeout(() => {
+      this.playNextChord();
+    }, (duration - 0.6) * 1000); // 600ms crossfade overlap
+  }
+
+  private playSoftBell(freq = 1046.5) {
+    const ctx = this.getContext();
+    if (!ctx || !this.masterGain) return;
     try {
       const now = ctx.currentTime;
+      const bellOsc = ctx.createOscillator();
+      const bellGain = ctx.createGain();
+      bellOsc.type = 'sine';
+      bellOsc.frequency.setValueAtTime(freq, now);
 
-      // Master organ gain with slow fade-in
-      this.organGain = ctx.createGain();
-      this.organGain.gain.setValueAtTime(0.001, now);
-      this.organGain.gain.exponentialRampToValueAtTime(0.18, now + 2.5);
+      bellGain.gain.setValueAtTime(0.0001, now);
+      bellGain.gain.linearRampToValueAtTime(0.03, now + 0.02);
+      bellGain.gain.exponentialRampToValueAtTime(0.00001, now + 3.0);
 
-      // Low-pass filter for warm cathedral acoustic depth
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(650, now);
-      filter.Q.setValueAtTime(1.2, now);
-
-      // Chorus / Vibrato LFO
-      this.lfo = ctx.createOscillator();
-      this.lfoGain = ctx.createGain();
-      this.lfo.frequency.setValueAtTime(0.2, now); // 0.2 Hz slow breath
-      this.lfoGain.gain.setValueAtTime(3.5, now);
-      this.lfo.connect(this.lfoGain);
-
-      // Sacred Cathedral Organ Chord (C Major 9 / Add 2 chord voicing: C3, G3, C4, E4, B4, D5)
-      const frequencies = [130.81, 196.00, 261.63, 329.63, 392.00, 493.88, 587.33];
-      this.organNodes = [];
-
-      frequencies.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const nodeGain = ctx.createGain();
-
-        // Alternate sine and warm triangle for pipe organ harmonics
-        osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
-        osc.frequency.setValueAtTime(freq, now);
-
-        // Connect subtle pitch LFO for acoustic warmth
-        if (this.lfoGain) {
-          this.lfoGain.connect(osc.detune);
-        }
-
-        // Calibrated amplitude per harmonic
-        const amp = 0.15 / (idx + 1);
-        nodeGain.gain.setValueAtTime(amp, now);
-
-        osc.connect(nodeGain);
-        nodeGain.connect(filter);
-
-        osc.start(now);
-        this.organNodes.push({ osc, gain: nodeGain });
-      });
-
-      filter.connect(this.organGain);
-      this.organGain.connect(this.masterGain);
-      this.lfo.start(now);
-    } catch {
-      // Audio autoplay policy fallback
-    }
+      bellOsc.connect(bellGain);
+      bellGain.connect(this.masterGain);
+      bellOsc.start(now);
+      bellOsc.stop(now + 3.1);
+    } catch {}
   }
 
-  public stop() {
-    if (!this.isPlaying || !this.ctx || !this.organGain) {
-      this.isPlaying = false;
-      return;
-    }
-
-    try {
-      const now = this.ctx.currentTime;
-      this.organGain.gain.cancelScheduledValues(now);
-      this.organGain.gain.setValueAtTime(this.organGain.gain.value, now);
-      this.organGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-
-      setTimeout(() => {
-        this.organNodes.forEach(({ osc }) => {
-          try {
-            osc.stop();
-            osc.disconnect();
-          } catch {}
-        });
-        this.organNodes = [];
-        if (this.lfo) {
-          try {
-            this.lfo.stop();
-            this.lfo.disconnect();
-          } catch {}
-          this.lfo = null;
-        }
-        this.organGain = null;
-        this.isPlaying = false;
-      }, 1300);
-    } catch {
-      this.isPlaying = false;
-    }
-  }
-
-  public setVolume(vol = 0.7) {
+  public setVolume(vol = 0.35) {
     if (this.masterGain && this.ctx) {
       this.masterGain.gain.setValueAtTime(Math.max(0, Math.min(1, vol)), this.ctx.currentTime);
     }
   }
 
-  // Play Cathedral Chime / Tubular Bell
+  // Play Cathedral Chime / Tubular Bell for interactive UI buttons
   public playChime(pitchMultiplier = 1) {
     const ctx = this.getContext();
     if (!ctx || !this.masterGain) return;
+
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
 
     try {
       const now = ctx.currentTime;
       const baseFreq = 523.25 * pitchMultiplier; // C5 base
 
-      // Tubular Bell harmonics: 1x, 2.76x, 5.4x, 8.9x
       const partials = [
-        { freq: baseFreq, gain: 0.28, decay: 2.8 },
-        { freq: baseFreq * 1.5, gain: 0.18, decay: 2.2 },
-        { freq: baseFreq * 2.0, gain: 0.12, decay: 1.8 },
-        { freq: baseFreq * 2.76, gain: 0.08, decay: 1.2 },
-        { freq: baseFreq * 4.0, gain: 0.05, decay: 0.9 },
+        { freq: baseFreq, gain: 0.22, decay: 2.5 },
+        { freq: baseFreq * 1.5, gain: 0.14, decay: 2.0 },
+        { freq: baseFreq * 2.0, gain: 0.09, decay: 1.6 },
+        { freq: baseFreq * 2.76, gain: 0.05, decay: 1.1 },
+        { freq: baseFreq * 4.0, gain: 0.03, decay: 0.8 },
       ];
 
       partials.forEach(({ freq, gain, decay }) => {
@@ -197,10 +362,14 @@ class SacredAudioEngine {
     const ctx = this.getContext();
     if (!ctx || !this.masterGain) return;
 
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+
     try {
       const now = ctx.currentTime;
 
-      // 1. Warm filtered noise swoosh (represents holy flame ignite)
+      // 1. Warm filtered noise swoosh
       const bufferSize = ctx.sampleRate * 1.5;
       const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const output = noiseBuffer.getChannelData(0);
@@ -228,7 +397,7 @@ class SacredAudioEngine {
       noiseGain.connect(this.masterGain);
       whiteNoise.start(now);
 
-      // 2. Harmonic sacred triad swell (C4, G4, E5)
+      // 2. Harmonic sacred triad swell
       const triad = [261.63, 392.00, 523.25, 659.25];
       triad.forEach((freq, idx) => {
         const osc = ctx.createOscillator();
@@ -248,7 +417,6 @@ class SacredAudioEngine {
         osc.stop(now + 2.1);
       });
 
-      // 3. Golden chime accent
       this.playChime(1.5);
     } catch {}
   }
@@ -257,6 +425,10 @@ class SacredAudioEngine {
   public playSparkles() {
     const ctx = this.getContext();
     if (!ctx || !this.masterGain) return;
+
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
 
     try {
       const now = ctx.currentTime;

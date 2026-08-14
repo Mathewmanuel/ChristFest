@@ -7,10 +7,15 @@ import { EventsSection } from './components/EventsSection';
 import { ScheduleSection } from './components/ScheduleSection';
 import { Footer } from './components/Footer';
 import { useLanguage } from './context/LanguageContext';
+import { sacredAudio } from './lib/audio';
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('hero');
   const { language } = useLanguage();
+
+  useEffect(() => {
+    sacredAudio.ensureStarted();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

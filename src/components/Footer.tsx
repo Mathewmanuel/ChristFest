@@ -1,6 +1,6 @@
 import React from 'react';
 import { GoldDivider, GreekKeyBorder } from './GreekKeyBorder';
-import { MapPin, Phone, Mail, Compass, ExternalLink, UserCheck } from 'lucide-react';
+import { MapPin, Phone, Instagram, Compass, ExternalLink, UserCheck } from 'lucide-react';
 import { CII_INFO } from '../data/eventData';
 import { useLanguage } from '../context/LanguageContext';
 import { sacredAudio } from '../lib/audio';
@@ -62,10 +62,18 @@ export const Footer: React.FC = () => {
                 <ExternalLink className="w-3.5 h-3.5 shrink-0" />
               </a>
 
-              <div className="flex items-center gap-2 pt-1 text-stone-300 min-w-0">
-                <Mail className="w-4 h-4 text-[#D4AF37] shrink-0" />
-                <span className="break-all text-[11px] sm:text-xs">cii.christfest2026@telcchristchurch.org</span>
-              </div>
+              <a
+                href={CII_INFO.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => sacredAudio.playChime()}
+                className="inline-flex items-center gap-2 pt-1 text-stone-300 hover:text-[#D4AF37] transition-colors min-w-0 group"
+                title="Follow CII on Instagram"
+              >
+                <Instagram className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform shrink-0" />
+                <span className="text-[11px] sm:text-xs font-sans tracking-wide">@{CII_INFO.instagramHandle}</span>
+                <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100 shrink-0" />
+              </a>
             </div>
           </div>
 

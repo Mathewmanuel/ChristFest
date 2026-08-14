@@ -20,6 +20,8 @@ export const CII_INFO = {
   welcomeTamil: 'குருவானவர் மற்றும் திருச்சபை சபைமன்றக் குழுவினர் உங்களை அன்போடு அழைக்கின்றனர்',
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=TELC+Christ+Church+Tambaram+GST+Road+Chennai+600045',
   embedMapUrl: 'https://maps.google.com/maps?q=TELC+Christ+Church+Tambaram+Chennai&t=&z=15&ie=UTF8&iwloc=&output=embed',
+  instagramHandle: 'ciichristchurchtbm',
+  instagramUrl: 'https://www.instagram.com/ciichristchurchtbm/',
   contacts: [
     { name: 'ALWIN', role: 'Secretary, CII', phone: '+91 94980 95355' },
     { name: 'SAMUEL', role: 'Vice-Chairman, CII', phone: '+91 73389 67637' },

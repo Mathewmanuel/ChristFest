@@ -1,0 +1,6 @@
+{
+  "name": "KLESIS 35th ChristFest 2026",
+  "description": "Elaborate single-page digital sanctuary & landing website for KLESIS 35th ChristFest 2026 organized by CII of TELC Christ Church Tambaram.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

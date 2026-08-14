@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-greek {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  }
+
+  .font-tamil {
+    font-family: 'Kavivanar', 'Noto Serif Tamil', 'Arima', serif;
+    line-height: 1.7;
+    letter-spacing: 0.015em;
+  }
+
+  .font-tamil-sans {
+    font-family: 'Arima', 'Noto Sans Tamil', sans-serif;
+    line-height: 1.6;
+  }
+
+  /* Gold Gradient Typography */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #FFF1B0 0%, #D4AF37 50%, #AA7C11 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Emerald Gradient Typography */
+  .text-emerald-gradient {
+    background: linear-gradient(135deg, #A7F3D0 0%, #10B981 50%, #047857 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Marble Card Surface */
+  .marble-card {
+    background-color: rgba(246, 248, 245, 0.96);
+    background-image: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12), transparent 70%);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    box-shadow: 0 10px 30px -10px rgba(6, 44, 34, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* Dark Sacred Emerald Monument Surface */
+  .dark-monument-card {
+    background-color: rgba(6, 30, 22, 0.95);
+    background-image: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15), transparent 70%);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(167, 243, 208, 0.2);
+  }
+
+  /* Gold Foil Border */
+  .gold-border-glow {
+    border: 1px solid #D4AF37;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+  }
+
+  /* Emerald Border Glow */
+  .emerald-border-glow {
+    border: 1px solid #10B981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+  }
+
+  /* Chiaroscuro Rich Emerald Radial Glow */
+  .chiaroscuro-bg {
+    background: radial-gradient(circle at 50% 30%, rgba(11, 61, 46, 0.75) 0%, rgba(4, 18, 14, 0.98) 80%);
+  }
+}
+
+/* Custom Scrollbar for Emerald Marble Sanctuary Aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #04140f;
+}
+::-webkit-scrollbar-thumb {
+  background: #059669;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+@keyframes pulse-gold {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.animate-pulse-gold {
+  animation: pulse-gold 4s infinite ease-in-out;
+}
+
+@keyframes butterfly-flap {
+  0%, 100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.2);
+  }
+}
+
+.animate-butterfly-flap {
+  animation: butterfly-flap 0.25s infinite ease-in-out;
+}

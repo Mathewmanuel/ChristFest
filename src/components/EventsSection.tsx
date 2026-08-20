@@ -59,16 +59,16 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
   };
 
   return (
-    <section id="events" className="relative py-24 bg-[#04120d] text-white overflow-hidden">
+    <section id="events" className="relative py-24 bg-[#04120d] text-white overflow-hidden scroll-mt-20">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-10">
+        <div id="competitions-header" className="text-center mb-10 scroll-mt-24 sm:scroll-mt-28">
           <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#0B3D2E] text-[#D4AF37] border border-[#D4AF37]/50 text-xs font-serif uppercase tracking-widest mb-3">
             <Award className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>{t('events.header', 'GRAND COMPETITIONS & TALENT FEST')}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-serif font-extrabold text-gold-gradient tracking-tight my-2">
+          <h2 id="competitions-title" className="text-3xl sm:text-5xl font-serif font-extrabold text-gold-gradient tracking-tight my-2 scroll-mt-24 sm:scroll-mt-28">
             {t('events.title', '35th Anniversary ChristFest Competitions')}
           </h2>
           <p className="text-stone-300 text-sm sm:text-base max-w-2xl mx-auto font-sans leading-relaxed">

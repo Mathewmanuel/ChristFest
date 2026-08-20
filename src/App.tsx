@@ -3,6 +3,7 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { AboutSection } from './components/AboutSection';
 import { BiblicalSection } from './components/BiblicalSection';
+import { GeneralRulesSection } from './components/GeneralRulesSection';
 import { EventsSection } from './components/EventsSection';
 import { ScheduleSection } from './components/ScheduleSection';
 import { Footer } from './components/Footer';
@@ -40,7 +41,7 @@ export default function App() {
   }, []);
 
   const handleScrollToEvents = () => {
-    const el = document.getElementById('events');
+    const el = document.getElementById('competitions-title') || document.getElementById('competitions-header') || document.getElementById('events');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
@@ -60,6 +61,7 @@ export default function App() {
         />
         <AboutSection />
         <BiblicalSection />
+        <GeneralRulesSection />
         <EventsSection />
         <ScheduleSection />
       </main>

@@ -58,7 +58,8 @@ export const Header: React.FC<HeaderProps> = ({ activeSection }) => {
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
-    const element = document.getElementById(id);
+    const targetId = id === 'events' ? 'competitions-title' : id;
+    const element = document.getElementById(targetId) || document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -127,30 +128,32 @@ export const Header: React.FC<HeaderProps> = ({ activeSection }) => {
               </span>
             </button>
 
-            {/* Ambient Church Sound Toggle (Desktop/Tablet) */}
+            {/* Ambient Sound Toggle Button (Desktop/Tablet) */}
             <button
               onClick={handleToggleAudio}
-              title={isAudioPlaying ? 'Mute Sacred Organ & Choir Chimes' : 'Play Ambient Church Choir Soundscape'}
-              className={`hidden sm:flex p-2 rounded-full border transition-all items-center gap-1 text-xs font-medium ${
+              title={isAudioPlaying ? 'Mute Epic Theme Music' : 'Play Epic Orchestral Theme Music'}
+              className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 text-xs font-serif font-bold shadow-md cursor-pointer ${
                 isAudioPlaying
-                  ? 'bg-[#0B3D2E] border-[#D4AF37] text-[#D4AF37] animate-pulse-gold'
+                  ? 'bg-[#0B3D2E] border-[#D4AF37] text-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.3)] hover:bg-[#0f4d3b]'
                   : 'bg-stone-900/80 border-stone-700 text-stone-400 hover:text-white hover:border-[#D4AF37]/50'
               }`}
             >
               {isAudioPlaying ? (
                 <>
-                  <Volume2 className="w-4 h-4 text-[#D4AF37]" />
-                  <span className="hidden md:inline text-[11px]">{t('nav.soundOn', 'Sound On')}</span>
+                  <Volume2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span className="hidden md:inline text-[11px] uppercase tracking-wider">
+                    {language === 'ta' ? 'ஒலி இயக்கத்தில்' : 'Sound On'}
+                  </span>
                 </>
               ) : (
                 <>
-                  <VolumeX className="w-4 h-4" />
-                  <span className="hidden md:inline text-[11px]">{t('nav.soundOff', 'Sound Off')}</span>
+                  <VolumeX className="w-3.5 h-3.5" />
+                  <span className="hidden md:inline text-[11px] uppercase tracking-wider">
+                    {language === 'ta' ? 'ஒலி நிறுத்தம்' : 'Sound Off'}
+                  </span>
                 </>
               )}
             </button>
-
-
 
             {/* Mobile Hamburger Toggle Button */}
             <button
@@ -172,10 +175,12 @@ export const Header: React.FC<HeaderProps> = ({ activeSection }) => {
               {/* Mobile Sound Toggle Item */}
               <button
                 onClick={handleToggleAudio}
-                className="flex items-center gap-1 text-[#A7F3D0] hover:text-[#D4AF37]"
+                className="flex items-center gap-1 text-[#A7F3D0] hover:text-[#D4AF37] text-xs font-serif px-2 py-1 rounded-full bg-[#0B3D2E] border border-[#D4AF37]/50"
               >
-                {isAudioPlaying ? <Volume2 className="w-3.5 h-3.5 text-[#D4AF37]" /> : <VolumeX className="w-3.5 h-3.5" />}
-                <span>{isAudioPlaying ? 'Sound ON' : 'Sound OFF'}</span>
+                {isAudioPlaying ? <Volume2 className="w-3.5 h-3.5 text-[#D4AF37]" /> : <VolumeX className="w-3.5 h-3.5 text-stone-400" />}
+                <span className="text-[#D4AF37] font-bold text-[10px] uppercase">
+                  {isAudioPlaying ? (language === 'ta' ? 'ஒலி இயக்கத்தில்' : 'Sound On') : (language === 'ta' ? 'ஒலி நிறுத்தம்' : 'Sound Off')}
+                </span>
               </button>
             </div>
             {navLinks.map((link) => {

@@ -14,6 +14,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
   const { language, t } = useLanguage();
 
   const currentEvents = language === 'ta' ? TAMIL_EVENTS_DATA : EVENTS_DATA;
+  const activeEvent = activeModalEvent ? (currentEvents.find(e => e.id === activeModalEvent.id) || activeModalEvent) : null;
 
   const categories = language === 'ta' ? [
     { id: 'all', label: 'அனைத்து போட்டிகள் (All)' },
@@ -161,21 +162,21 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
         </div>
 
         {/* Modal View for Event Guidelines */}
-        {activeModalEvent && (
+        {activeEvent && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 pt-20 sm:pt-24 bg-black/85 backdrop-blur-md animate-fade-in overflow-y-auto">
             <div className="marble-card max-w-2xl w-full rounded-2xl p-4 sm:p-8 border-2 border-[#D4AF37] shadow-2xl relative my-auto max-h-[88vh] sm:max-h-[85vh] overflow-y-auto">
               {/* Sticky Top Header Bar inside Modal so Close Button is Always Visible */}
               <div className="sticky top-0 z-30 bg-[#fbf9f4]/98 backdrop-blur-md pb-2.5 mb-3 border-b border-[#D4AF37]/40 flex items-center justify-between gap-3 -mx-2 px-2 pt-1">
                 <div className="flex items-center gap-2 min-w-0">
                   <div className="p-2 rounded-lg bg-[#0B3D2E] border border-[#D4AF37] shrink-0">
-                    {getEventIcon(activeModalEvent.iconName)}
+                    {getEventIcon(activeEvent.iconName)}
                   </div>
                   <div className="min-w-0">
                     <span className="text-[10px] font-serif uppercase tracking-widest text-[#B8860B] font-bold block truncate">
-                      {activeModalEvent.categoryLabel}
+                      {activeEvent.categoryLabel}
                     </span>
                     <h3 className="font-serif font-extrabold text-base sm:text-xl text-[#0B3D2E] truncate">
-                      {activeModalEvent.title}
+                      {activeEvent.title}
                     </h3>
                   </div>
                 </div>
@@ -193,7 +194,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
               <GreekKeyBorder height={14} color="#B8860B" className="mb-4" />
 
               <p className="text-sm text-stone-700 font-sans my-4 leading-relaxed">
-                {activeModalEvent.description}
+                {activeEvent.description}
               </p>
 
               {/* Event Meta Details */}
@@ -202,7 +203,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                   <Clock className="w-4 h-4 text-[#B8860B] shrink-0" />
                   <div>
                     <span className="block text-stone-500 font-serif">{t('events.timeLabel', 'Time Slot:')}</span>
-                    <span className="font-bold text-[#0B3D2E]">{activeModalEvent.time}</span>
+                    <span className="font-bold text-[#0B3D2E]">{activeEvent.time}</span>
                   </div>
                 </div>
 
@@ -210,7 +211,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                   <MapPin className="w-4 h-4 text-[#B8860B] shrink-0" />
                   <div>
                     <span className="block text-stone-500 font-serif">{t('events.venueLabel', 'Venue Location:')}</span>
-                    <span className="font-bold text-[#0B3D2E]">{activeModalEvent.venue}</span>
+                    <span className="font-bold text-[#0B3D2E]">{activeEvent.venue}</span>
                   </div>
                 </div>
 
@@ -218,7 +219,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                   <Trophy className="w-4 h-4 text-[#B8860B] shrink-0" />
                   <div>
                     <span className="block text-stone-500 font-serif">{t('events.prizeLabel', 'Honors & Awards:')}</span>
-                    <span className="font-bold text-[#0B3D2E]">{activeModalEvent.awards}</span>
+                    <span className="font-bold text-[#0B3D2E]">{activeEvent.awards}</span>
                   </div>
                 </div>
               </div>
@@ -230,7 +231,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                   {language === 'ta' ? 'விதிமுறைகள் & வழிகாட்டுதல்கள்' : 'Rules & Event Guidelines'}
                 </h4>
                 <ul className="space-y-2 text-xs text-stone-700 font-sans">
-                  {activeModalEvent.rules.map((rule, idx) => (
+                  {activeEvent.rules.map((rule, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#B8860B] mt-1.5 shrink-0" />
                       <span className="leading-relaxed">{rule}</span>
@@ -243,7 +244,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
               <div className="mt-6 pt-4 border-t border-[#B8860B]/30 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-[#0B3D2E] font-serif font-semibold">
                   <Trophy className="w-4 h-4 text-[#B8860B]" />
-                  <span>{activeModalEvent.awards}</span>
+                  <span>{activeEvent.awards}</span>
                 </div>
                 <button
                   onClick={() => setActiveModalEvent(null)}

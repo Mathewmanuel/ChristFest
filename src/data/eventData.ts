@@ -499,7 +499,7 @@ export const TAMIL_SCHEDULE_DATA: ScheduleItem[] = [
     category: 'ஜெபம்',
     location: 'TELC கிறிஸ்துநாதர் ஆலயம், தாம்பரம்',
     speakerOrLeader: 'குருவானவர்',
-    description: 'கிறிஸ்ட்ஃபெஸ்ட் 2026 நிகழ்வை தேவ பிரசன்னத்தோடு தொடங்கும் ஆரம்ப ஜெபம்.',
+    description: 'கிறைஸ்ட்ஃபெஸ்ட் 2026 நிகழ்வை தேவ பிரசன்னத்தோடு தொடங்கும் ஆரம்ப ஜெபம்.',
   },
   {
     id: 'sch-3',

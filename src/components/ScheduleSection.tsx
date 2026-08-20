@@ -20,7 +20,7 @@ export const ScheduleSection: React.FC = () => {
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-serif font-extrabold text-gold-gradient tracking-tight my-2">
-            {language === 'ta' ? 'கிறிஸ்ட்ஃபெஸ்ட் ’26 உத்தேச நிகழ்வு நிரல்' : 'ChristFest ’26 Tentative Event Schedule'}
+            {language === 'ta' ? 'கிறைஸ்ட்ஃபெஸ்ட் ’26 உத்தேச நிகழ்வு நிரல்' : 'ChristFest ’26 Tentative Event Schedule'}
           </h2>
           <p className="text-stone-300 text-sm sm:text-base max-w-2xl mx-auto font-sans leading-relaxed">
             {language === 'ta'

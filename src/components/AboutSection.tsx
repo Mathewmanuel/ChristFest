@@ -19,11 +19,11 @@ export const AboutSection: React.FC = () => {
   };
 
   const milestoneTimeline = language === 'ta' ? [
-    { year: '1991', title: 'தொடக்கக் காலம்', desc: 'தாம்பரம் TELC ஆலயத்தில் கிறிஸ்தவ இளைஞர் இயக்கம் (CII) கிறிஸ்ட்ஃபெஸ்ட் (ChristFest) நிகழ்வை நிறுவியது.' },
+    { year: '1991', title: 'தொடக்கக் காலம்', desc: 'தாம்பரம் TELC ஆலயத்தில் கிறிஸ்தவ இளைஞர் இயக்கம் (CII) கிறைஸ்ட்ஃபெஸ்ட் (ChristFest) நிகழ்வை நிறுவியது.' },
     { year: '2000', title: 'புதிய நூற்றாண்டு', desc: 'புதிய நூற்றாண்டில் பிரமாண்டமான தொடக்கம்! தமிழக இளைஞர் பாடகர் குழுக்கள் மற்றும் சுவிசேஷ இசைப் போட்டிகளுடன் புதிய உச்சம் தொட்டது.' },
     { year: '2011', title: 'வெள்ளி விழா (25-வது)', desc: 'தமிழ்நாடெங்கிலுமிருந்து திரளான இளைஞர்களின் உற்சாகப் பங்கேற்புடன் 25-வது வெள்ளி விழாவை மிகச் சிறப்பாகக் கொண்டாடியது.' },
     { year: '2020', title: 'இணையவழி ஐக்கியம்', desc: 'சவாலான காலத்திலும் இளைஞர்களை இணைய வழியில் ஒருங்கிணைத்தது.' },
-    { year: '2026', title: '35-வது வரலாற்று மைல்கல்', desc: '1 தீமோத்தேயு 6:12–14 மையப் கருப்பொருளில் 35-வது கிளீசிஸ் கிறிஸ்ட்ஃபெஸ்ட் கொண்டாட்டம்.' },
+    { year: '2026', title: '35-வது வரலாற்று மைல்கல்', desc: '1 தீமோத்தேயு 6:12–14 மையப் கருப்பொருளில் 35-வது கிளீசிஸ் கிறைஸ்ட்ஃபெஸ்ட் கொண்டாட்டம்.' },
   ] : [
     { year: '1991', title: 'The Genesis', desc: 'CII established ChristFest at TELC Christ Church Tambaram, building on its rich legacy of youth ministry.' },
     { year: '2000', title: 'The New Millennium', desc: 'Entered the new millennium with a bang! Expanded across youth fellowships with musical and choir competitions.' },
@@ -34,8 +34,8 @@ export const AboutSection: React.FC = () => {
 
   const ciiHighlights = language === 'ta' ? [
     {
-      title: '35 ஆண்டுகள் கிறிஸ்ட்ஃபெஸ்ட் (1991–2026)',
-      description: 'கிறிஸ்தவ வாலிபர்களின் ஆவிக்குரிய விசுவாசம், பாடகர் குழு இசை மற்றும் வேத அறிவை வளர்க்கும் 35 வரலாற்றுச் சிறப்புமிக்க கிறிஸ்ட்ஃபெஸ்ட் பதிப்புகள்.',
+      title: '35 ஆண்டுகள் கிறைஸ்ட்ஃபெஸ்ட் (1991–2026)',
+      description: 'கிறிஸ்தவ வாலிபர்களின் ஆவிக்குரிய விசுவாசம், பாடகர் குழு இசை மற்றும் வேத அறிவை வளர்க்கும் 35 வரலாற்றுச் சிறப்புமிக்க கிறைஸ்ட்ஃபெஸ்ட் பதிப்புகள்.',
     },
     {
       title: 'கிறிஸ்தவ இளைஞர் இயக்கம் (CII)',
@@ -78,15 +78,15 @@ export const AboutSection: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 px-2 flex flex-col items-center justify-center">
           <div className="inline-flex max-w-full items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B3D2E] text-[#D4AF37] border border-[#D4AF37]/50 text-[11px] sm:text-xs font-serif uppercase tracking-wider mb-3 shadow-md text-center">
             <Church className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
-            <span className="break-words">{language === 'ta' ? '35 ஆண்டுகள் கிறிஸ்ட்ஃபெஸ்ட் (1991–2026)' : '35 Years of ChristFest (1991–2026)'}</span>
+            <span className="break-words">{language === 'ta' ? '35 ஆண்டுகள் கிறைஸ்ட்ஃபெஸ்ட் (1991–2026)' : '35 Years of ChristFest (1991–2026)'}</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-extrabold text-gold-gradient tracking-tight my-2 break-words text-center leading-tight mx-auto">
-            {language === 'ta' ? '35 ஆண்டுகள் கிறிஸ்ட்ஃபெஸ்ட்' : '35 Years of ChristFest'}
+            {language === 'ta' ? '35 ஆண்டுகள் கிறைஸ்ட்ஃபெஸ்ட்' : '35 Years of ChristFest'}
           </h2>
           <p className="text-stone-300 text-xs sm:text-base max-w-3xl mx-auto font-sans leading-relaxed mt-2 font-medium text-center">
             {language === 'ta'
-              ? 'தாம்பரம் TELC கிறிஸ்துநாதர் ஆலயத்தின் நீண்டகால கிறிஸ்தவ இளைஞர் இயக்கம் (CII) பெருமையுடன் வழங்கும் 35-வது வரலாற்றுச் சிறப்புமிக்க கிறிஸ்ட்ஃபெஸ்ட் (1991–2026)'
+              ? 'தாம்பரம் TELC கிறிஸ்துநாதர் ஆலயத்தின் நீண்டகால கிறிஸ்தவ இளைஞர் இயக்கம் (CII) பெருமையுடன் வழங்கும் 35-வது வரலாற்றுச் சிறப்புமிக்க கிறைஸ்ட்ஃபெஸ்ட் (1991–2026)'
               : '35 Landmark Years of ChristFest (1991–2026) organized by Christava Illaignar Iyakkam (CII) of TELC Christ Church Tambaram'}
           </p>
 
@@ -132,11 +132,11 @@ export const AboutSection: React.FC = () => {
                   <span>TELC Christ Church, Tambaram</span>
                 </div>
                 <h2 className="text-xl sm:text-3xl font-serif font-extrabold text-gold-gradient tracking-tight">
-                  {language === 'ta' ? '35 ஆண்டுகள் கிறிஸ்ட்ஃபெஸ்ட்' : '35 Years of ChristFest'}
+                  {language === 'ta' ? '35 ஆண்டுகள் கிறைஸ்ட்ஃபெஸ்ட்' : '35 Years of ChristFest'}
                 </h2>
                 <p className="text-xs sm:text-sm text-[#A7F3D0] font-serif italic mt-0.5">
                   {language === 'ta'
-                    ? '1991 – 2026: 35 ஆண்டுகள் ஆன்மீக இறைப்பணி & கிறிஸ்ட்ஃபெஸ்ட் கொண்டாட்டம்'
+                    ? '1991 – 2026: 35 ஆண்டுகள் ஆன்மீக இறைப்பணி & கிறைஸ்ட்ஃபெஸ்ட் கொண்டாட்டம்'
                     : '1991 – 2026: 35 Milestone Years of Youth Ministry, Spiritual Fellowship & Gospel Outreach'}
                 </p>
               </div>

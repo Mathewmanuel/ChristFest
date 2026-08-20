@@ -742,7 +742,7 @@ export const Altar3DViewer: React.FC = () => {
         <div className="flex items-center gap-2">
           <Award className="w-4 h-4 text-[#D4AF37]" />
           <span className="text-xs font-serif font-bold text-[#D4AF37] uppercase tracking-wider">
-            {language === 'ta' ? '35 ஆண்டுகள் கிறிஸ்ட்ஃபெஸ்ட்' : '35 Years of ChristFest'}
+            {language === 'ta' ? '35 ஆண்டுகள் கிறைஸ்ட்ஃபெஸ்ட்' : '35 Years of ChristFest'}
           </span>
         </div>
 

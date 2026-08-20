@@ -25,14 +25,14 @@ export const Footer: React.FC = () => {
                   KLESIS 2026
                 </h3>
                 <div className="text-xs text-[#A7F3D0] uppercase font-serif">
-                  {language === 'ta' ? '35-வது கிறிஸ்ட்ஃபெஸ்ட் விழா' : '35th Edition of ChristFest'}
+                  {language === 'ta' ? '35-வது கிறைஸ்ட்ஃபெஸ்ட் விழா' : '35th Edition of ChristFest'}
                 </div>
               </div>
             </div>
 
             <p className="text-xs text-stone-300 font-sans leading-relaxed">
               {language === 'ta'
-                ? 'தாம்பரம் TELC கிறிஸ்துநாதர் ஆலயத்தின் கிறிஸ்ட்ஃபெஸ்ட் ஒருங்கிணைப்பு குழு வழங்கும் 35-வது கிறிஸ்ட்ஃபெஸ்ட் பெருவிழா (1 தீமோத்தேயு 6:12–14).'
+                ? 'தாம்பரம் TELC கிறிஸ்துநாதர் ஆலயத்தின் கிறைஸ்ட்ஃபெஸ்ட் ஒருங்கிணைப்பு குழு வழங்கும் 35-வது கிறைஸ்ட்ஃபெஸ்ட் பெருவிழா (1 தீமோத்தேயு 6:12–14).'
                 : `Organized by ${CII_INFO.organization} of ${CII_INFO.church}. Join us for the monumental 35th Edition of ChristFest celebrating the theme of 1 Timothy 6:12–14.`}
             </p>
 

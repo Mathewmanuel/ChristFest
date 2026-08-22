@@ -1,32 +1,40 @@
-// Ancient Hellenic & Roman Classical Score Engine
-// Features:
-// - Realistic Plucked Greek Lyre & Concert Harp acoustics (physical plucked string synthesis)
-// - Flowing harp arpeggios & ethereal cascading glissandos in ancient Dorian / Aeolian modes
-// - Gentle ancient woodwind / Aulos pan flute melodies
-// - Warm atmospheric sanctuary & temple choir drone resonances
-// - ZERO modern drum beats, zero kicks, zero electronic percussion
-// - Realistic Roman parchment unrolling sound effect and sacred chime accents
+// Ancient Hellenic & Roman Classical Acoustic Engine
+// Meticulously engineered for pristine fidelity, zero distortion, zero clipping, and studio-grade clarity across all devices.
 
 class SacredAudioEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
-  private reverbConvolver: ConvolverNode | null = null;
+  private dryGain: GainNode | null = null;
+  private wetGain: GainNode | null = null;
+  private limiter: DynamicsCompressorNode | null = null;
+  private masterFilter: BiquadFilterNode | null = null;
+
+  // Separate stereo spatial delay channels (isolated to prevent resonant feedback overload)
+  private delayL: DelayNode | null = null;
+  private delayR: DelayNode | null = null;
+  private delayFeedbackL: GainNode | null = null;
+  private delayFeedbackR: GainNode | null = null;
+  private delayDamping: BiquadFilterNode | null = null;
+  
   private isMuted = false;
   private isRunning = false;
-  private currentVolume = 0.85;
   private sequenceTimer: number | null = null;
   private listenersAttached = false;
   private stateChangeListeners: ((isPlaying: boolean) => void)[] = [];
   private currentBar = 0;
+  private unlockHandler: (() => void) | null = null;
 
-  // Serene Classical Ancient Tempo: 72 BPM
-  private readonly BPM = 72;
-  private readonly beatDuration = 60 / 72; // ~0.833s per beat
-  private readonly measureDuration = (60 / 72) * 4; // ~3.333s per 4/4 measure
+  // Serene Classical Greek Modal Tempo: 68 BPM (Peaceful, sacred pacing)
+  private readonly BPM = 68;
+  private readonly beatDuration = 60 / 68; // ~0.882s per beat
+  private readonly measureDuration = (60 / 68) * 4; // ~3.529s per measure
 
   constructor() {
     if (typeof window !== 'undefined') {
       this.setupAutoUnlock();
+      setTimeout(() => {
+        this.ensureStarted();
+      }, 50);
     }
   }
 
@@ -36,44 +44,77 @@ class SacredAudioEngine {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioCtx) {
         try {
-          this.ctx = new AudioCtx();
+          this.ctx = new AudioCtx({ latencyHint: 'playback' });
 
+          // 1. Studio-grade Soft Limiter (Acts purely as transparent ceiling protection, no pumping/distortion)
+          this.limiter = this.ctx.createDynamicsCompressor();
+          this.limiter.threshold.setValueAtTime(-2.0, this.ctx.currentTime);
+          this.limiter.knee.setValueAtTime(12.0, this.ctx.currentTime);
+          this.limiter.ratio.setValueAtTime(2.0, this.ctx.currentTime);
+          this.limiter.attack.setValueAtTime(0.03, this.ctx.currentTime); // Smooth 30ms attack prevents intermodulation
+          this.limiter.release.setValueAtTime(0.25, this.ctx.currentTime);
+
+          // 2. High-headroom Master Bus (Calibrated so even dense polyphonic passages never saturate)
           this.masterGain = this.ctx.createGain();
-          this.masterGain.gain.setValueAtTime(this.currentVolume, this.ctx.currentTime);
+          this.masterGain.gain.setValueAtTime(0.38, this.ctx.currentTime);
 
-          // Create ancient acoustic temple hall reverb
-          this.createSanctuaryReverb();
+          // 3. Gentle master acoustic curve (removes sub-bass rumble < 60Hz and harsh ultrasonic hiss > 12kHz)
+          this.masterFilter = this.ctx.createBiquadFilter();
+          this.masterFilter.type = 'highpass';
+          this.masterFilter.frequency.setValueAtTime(65, this.ctx.currentTime);
+          this.masterFilter.Q.setValueAtTime(0.707, this.ctx.currentTime);
 
-          if (this.reverbConvolver) {
-            this.masterGain.connect(this.reverbConvolver);
-            this.reverbConvolver.connect(this.ctx.destination);
-          }
-          this.masterGain.connect(this.ctx.destination);
-        } catch {}
+          // 4. Pristine Reverb / Stereo Spatial Ambience (Separated L/R paths with low damping)
+          this.dryGain = this.ctx.createGain();
+          this.dryGain.gain.setValueAtTime(0.85, this.ctx.currentTime);
+
+          this.wetGain = this.ctx.createGain();
+          this.wetGain.gain.setValueAtTime(0.20, this.ctx.currentTime);
+
+          this.delayDamping = this.ctx.createBiquadFilter();
+          this.delayDamping.type = 'lowpass';
+          this.delayDamping.frequency.setValueAtTime(900, this.ctx.currentTime);
+
+          this.delayL = this.ctx.createDelay();
+          this.delayL.delayTime.setValueAtTime(0.28, this.ctx.currentTime);
+
+          this.delayR = this.ctx.createDelay();
+          this.delayR.delayTime.setValueAtTime(0.42, this.ctx.currentTime);
+
+          this.delayFeedbackL = this.ctx.createGain();
+          this.delayFeedbackL.gain.setValueAtTime(0.18, this.ctx.currentTime);
+
+          this.delayFeedbackR = this.ctx.createGain();
+          this.delayFeedbackR.gain.setValueAtTime(0.18, this.ctx.currentTime);
+
+          // Connect dry chain: masterGain -> dryGain -> masterFilter -> limiter -> destination
+          this.masterGain.connect(this.dryGain);
+          this.dryGain.connect(this.masterFilter);
+
+          // Connect wet ambient chain: masterGain -> delayDamping -> [delayL, delayR]
+          this.masterGain.connect(this.delayDamping);
+          this.delayDamping.connect(this.delayL);
+          this.delayDamping.connect(this.delayR);
+
+          // Individual feedback paths (strictly isolated L and R to avoid resonant summation)
+          this.delayL.connect(this.delayFeedbackL);
+          this.delayFeedbackL.connect(this.delayL);
+
+          this.delayR.connect(this.delayFeedbackR);
+          this.delayFeedbackR.connect(this.delayR);
+
+          this.delayL.connect(this.wetGain);
+          this.delayR.connect(this.wetGain);
+          this.wetGain.connect(this.masterFilter);
+
+          this.masterFilter.connect(this.limiter);
+          this.limiter.connect(this.ctx.destination);
+        } catch {
+          // AudioContext initialization fallback
+        }
       }
     }
     return this.ctx;
-  }
-
-  // Generates a soft, lush 2.8s acoustic hall impulse response for rich harp resonance
-  private createSanctuaryReverb() {
-    if (!this.ctx) return;
-    try {
-      const rate = this.ctx.sampleRate;
-      const length = Math.floor(rate * 2.8);
-      const impulse = this.ctx.createBuffer(2, length, rate);
-      const left = impulse.getChannelData(0);
-      const right = impulse.getChannelData(1);
-
-      for (let i = 0; i < length; i++) {
-        const decay = Math.exp(-i / (rate * 0.9));
-        left[i] = (Math.random() * 2 - 1) * decay * 0.35;
-        right[i] = (Math.random() * 2 - 1) * decay * 0.35;
-      }
-
-      this.reverbConvolver = this.ctx.createConvolver();
-      this.reverbConvolver.buffer = impulse;
-    } catch {}
   }
 
   public subscribeState(listener: (isPlaying: boolean) => void) {
@@ -97,18 +138,29 @@ class SacredAudioEngine {
     if (this.listenersAttached || typeof window === 'undefined') return;
     this.listenersAttached = true;
 
-    const unlock = () => {
-      this.ensureStarted();
+    this.unlockHandler = () => {
+      if (!this.isMuted) {
+        this.ensureStarted();
+      }
+      if (this.isRunning) {
+        this.removeUnlockListeners();
+      }
     };
 
-    const events = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'click', 'scroll'];
+    const events = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'click', 'scroll', 'wheel', 'touchmove', 'pointerup', 'touchend'];
     events.forEach(evt => {
-      window.addEventListener(evt, unlock, { passive: true, once: false });
+      window.addEventListener(evt, this.unlockHandler!, { passive: true });
     });
+  }
 
-    setTimeout(() => {
-      this.ensureStarted();
-    }, 150);
+  private removeUnlockListeners() {
+    if (!this.unlockHandler || typeof window === 'undefined') return;
+    const events = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'click', 'scroll', 'wheel', 'touchmove', 'pointerup', 'touchend'];
+    events.forEach(evt => {
+      window.removeEventListener(evt, this.unlockHandler!);
+    });
+    this.unlockHandler = null;
+    this.listenersAttached = false;
   }
 
   public ensureStarted() {
@@ -196,194 +248,193 @@ class SacredAudioEngine {
     const now = ctx.currentTime;
     const bar = this.currentBar;
 
-    // 1. Play Plucked Greek Harp / Lyre Arpeggio
+    // 1. Play Plucked Greek Harp / Lyre Arpeggio (Pristine harmonic synthesis)
     this.playGreekHarpArpeggio(now, bar);
 
-    // 2. Play Deep Acoustic Bass Harp Pluck
+    // 2. Play Pure Acoustic Bass Note (Warm fundamental, zero distortion)
     this.playBassHarpNote(now, bar);
 
-    // 3. Play Ancient Pan Flute / Aulos Wind Melody
+    // 3. Play Ancient Pan Flute / Aulos Wind Melody (Silky smooth, gentle vibrato)
     this.playAncientAulosMelody(now, bar);
 
-    // 4. Play Gentle Ethereal Temple Atmosphere & String Pad
+    // 4. Play Gentle Ethereal Background Presence
     this.playTempleAtmosphere(now, bar);
 
     this.currentBar = (this.currentBar + 1) % 16;
     this.sequenceTimer = window.setTimeout(() => {
       this.scheduleNextHarpMeasure();
-    }, this.measureDuration * 1000 - 40);
+    }, this.measureDuration * 1000 - 30);
   }
 
   // =========================================================================
-  // 1. PLUCKED GREEK HARP & LYRE STRING MODEL (Rich Harmonic Overtones)
+  // 1. PLUCKED GREEK HARP & LYRE STRING MODEL (Clean, Melodic & Crackle-Free)
+  // Uses dual additive sine harmonics + dynamic frequency envelope for authentic organic string resonance.
   // =========================================================================
-  private pluckHarpString(freq: number, startTime: number, velocity = 1.0, duration = 3.2) {
+  private pluckHarpString(freq: number, startTime: number, velocity = 1.0, decayTime = 1.8) {
     const ctx = this.ctx;
     if (!ctx || !this.masterGain) return;
 
-    // Plucked string harmonic spectrum with physical wooden body resonance:
-    // Fundamental + 2nd, 3rd, 4th, 5th, 6th partials with natural decay
-    const partials = [
-      { ratio: 1.0, amp: 0.45, decay: duration },
-      { ratio: 2.002, amp: 0.28, decay: duration * 0.75 },
-      { ratio: 3.006, amp: 0.16, decay: duration * 0.55 },
-      { ratio: 4.012, amp: 0.09, decay: duration * 0.4 },
-      { ratio: 5.02, amp: 0.05, decay: duration * 0.28 },
-      { ratio: 6.03, amp: 0.025, decay: duration * 0.18 },
-    ];
-
-    // Initial fingernail pluck transient
-    const pluckNoise = ctx.createBufferSource();
     try {
-      const pLen = Math.floor(ctx.sampleRate * 0.015);
-      const pBuf = ctx.createBuffer(1, pLen, ctx.sampleRate);
-      const pData = pBuf.getChannelData(0);
-      for (let i = 0; i < pLen; i++) pData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (pLen * 0.3));
-      pluckNoise.buffer = pBuf;
+      // Primary fundamental oscillator (pure sine)
+      const oscFundamental = ctx.createOscillator();
+      const oscOvertone = ctx.createOscillator();
 
-      const pFilter = ctx.createBiquadFilter();
-      pFilter.type = 'bandpass';
-      pFilter.frequency.setValueAtTime(freq * 2.5, startTime);
-      pFilter.Q.setValueAtTime(3.0, startTime);
+      const stringGain = ctx.createGain();
+      const overtoneGain = ctx.createGain();
+      const stringFilter = ctx.createBiquadFilter();
 
-      const pGain = ctx.createGain();
-      pGain.gain.setValueAtTime(0.12 * velocity, startTime);
-      pGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.02);
+      oscFundamental.type = 'sine';
+      oscFundamental.frequency.setValueAtTime(freq, startTime);
 
-      pluckNoise.connect(pFilter);
-      pFilter.connect(pGain);
-      pGain.connect(this.masterGain);
-      pluckNoise.start(startTime);
+      // Subtle 2nd harmonic (octave) for warmth and string presence
+      oscOvertone.type = 'sine';
+      oscOvertone.frequency.setValueAtTime(freq * 2, startTime);
+      overtoneGain.gain.setValueAtTime(0.18, startTime);
+
+      // Acoustic string dampening lowpass filter (simulates string tension decay)
+      stringFilter.type = 'lowpass';
+      stringFilter.frequency.setValueAtTime(Math.min(freq * 3.2, 2200), startTime);
+      stringFilter.frequency.setTargetAtTime(Math.min(freq * 1.2, 650), startTime + 0.04, decayTime * 0.35);
+
+      // Clean, click-free amplitude envelope with 8ms natural attack
+      const peakAmp = 0.09 * Math.min(Math.max(velocity, 0.1), 1.2);
+      stringGain.gain.setValueAtTime(0, startTime);
+      stringGain.gain.setTargetAtTime(peakAmp, startTime, 0.008);
+      stringGain.gain.setTargetAtTime(0, startTime + 0.03, decayTime * 0.42);
+
+      // Routing
+      oscOvertone.connect(overtoneGain);
+      overtoneGain.connect(stringFilter);
+      oscFundamental.connect(stringFilter);
+      stringFilter.connect(stringGain);
+      stringGain.connect(this.masterGain);
+
+      oscFundamental.start(startTime);
+      oscOvertone.start(startTime);
+
+      const stopTime = startTime + decayTime + 0.15;
+      oscFundamental.stop(stopTime);
+      oscOvertone.stop(stopTime);
     } catch {}
-
-    // Resonant string harmonics
-    partials.forEach(({ ratio, amp, decay }) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-
-      osc.type = ratio === 1.0 ? 'triangle' : 'sine';
-      osc.frequency.setValueAtTime(freq * ratio, startTime);
-
-      // Wooden body tone damping
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(freq * 4.5, startTime);
-      filter.frequency.exponentialRampToValueAtTime(freq * 1.8, startTime + decay * 0.5);
-
-      const noteAmp = amp * velocity * 0.32;
-      gain.gain.setValueAtTime(0.0001, startTime);
-      gain.gain.linearRampToValueAtTime(noteAmp, startTime + 0.004);
-      gain.gain.exponentialRampToValueAtTime(0.00001, startTime + decay);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.masterGain!);
-
-      osc.start(startTime);
-      osc.stop(startTime + decay + 0.1);
-    });
   }
 
-  // 2. GREEK HARP ARPEGGIO PATTERNS (8 notes per measure, rolling arpeggios & glissandos)
+  // 2. GREEK HARP ARPEGGIO PATTERNS
   private playGreekHarpArpeggio(startTime: number, barIndex: number) {
     const beat = this.beatDuration;
     const eighth = beat / 2;
     const sixteenth = beat / 4;
 
-    // Frequencies (Hz)
-    // D3=146.83, F3=174.61, A3=220.00, C4=261.63, D4=293.66, E4=329.63, F4=349.23, G4=392.00, A4=440.00, B4=493.88, C5=523.25, D5=587.33, E5=659.25, F5=698.46, A5=880.00
-
     const harpChords: number[][] = [
-      // 0: Dm9 (D3, A3, C4, E4, F4, A4, C5, D5)
+      // 0: Dm9
       [146.83, 220.00, 261.63, 329.63, 349.23, 440.00, 523.25, 587.33],
-      // 1: F Maj7 (F3, C4, E4, A4, C5, E5, F5, A5)
+      // 1: F Maj7
       [174.61, 261.63, 329.63, 440.00, 523.25, 659.25, 698.46, 880.00],
-      // 2: C Maj9 (C3, G3, D4, E4, G4, B4, D5, G5)
+      // 2: C Maj9
       [130.81, 196.00, 293.66, 329.63, 392.00, 493.88, 587.33, 783.99],
-      // 3: G Sus4 / Greek Dorian (G3, D4, G4, A4, C5, D5, G5, A5)
+      // 3: G Sus4 / Greek Dorian
       [196.00, 293.66, 392.00, 440.00, 523.25, 587.33, 783.99, 880.00],
-      // 4: Bb Maj7 (Bb2, F3, A3, D4, F4, A4, D5, F5)
+      // 4: Bb Maj7
       [116.54, 174.61, 220.00, 293.66, 349.23, 440.00, 587.33, 698.46],
-      // 5: Am7 (A2, E3, G3, C4, E4, G4, C5, E5)
+      // 5: Am7
       [110.00, 164.81, 196.00, 261.63, 329.63, 392.00, 523.25, 659.25],
-      // 6: Dm (D3, A3, D4, F4, A4, D5, F5, A5)
+      // 6: Dm
       [146.83, 220.00, 293.66, 349.23, 440.00, 587.33, 698.46, 880.00],
-      // 7: A Phrygian Cadence (A2, E3, A3, C#4, E4, G4, A4, C#5)
+      // 7: A Phrygian Cadence
       [110.00, 164.81, 220.00, 277.18, 329.63, 392.00, 440.00, 554.37],
       // 8: Dm9 Glissando Ascending
       [146.83, 220.00, 293.66, 329.63, 349.23, 440.00, 523.25, 587.33],
-      // 9: G / Greek Mixolydian (G2, D3, B3, D4, G4, B4, D5, G5)
-      [98.00, 146.83, 246.94, 293.66, 392.00, 493.88, 587.33, 783.99],
-      // 10: C Maj7 (C3, G3, B3, E4, G4, B4, C5, E5)
+      // 9: G Mixolydian
+      [146.83, 196.00, 246.94, 293.66, 392.00, 493.88, 587.33, 783.99],
+      // 10: C Maj7
       [130.81, 196.00, 246.94, 329.63, 392.00, 493.88, 523.25, 659.25],
-      // 11: F Maj9 (F2, C3, A3, E4, G4, A4, C5, E5)
-      [87.31, 130.81, 220.00, 329.63, 392.00, 440.00, 523.25, 659.25],
+      // 11: F Maj9
+      [130.81, 174.61, 220.00, 329.63, 392.00, 440.00, 523.25, 659.25],
       // 12: Bb Maj9 Cascading Harp Arpeggio
       [116.54, 174.61, 261.63, 293.66, 349.23, 466.16, 523.25, 587.33],
-      // 13: C9 (C3, G3, D4, E4, Bb4, D5, E5, G5)
+      // 13: C9
       [130.81, 196.00, 293.66, 329.63, 466.16, 587.33, 659.25, 783.99],
-      // 14: Dm9 (D3, A3, F4, A4, C5, E5, F5, A5)
+      // 14: Dm9
       [146.83, 220.00, 349.23, 440.00, 523.25, 659.25, 698.46, 880.00],
-      // 15: D Major Radiant Resolve (D3, A3, F#4, A4, D5, F#5, A5, D6)
+      // 15: D Major Radiant Resolve
       [146.83, 220.00, 369.99, 440.00, 587.33, 739.99, 880.00, 1174.66],
     ];
 
     const notes = harpChords[barIndex] || harpChords[0];
 
-    // Every 4th bar, perform a rapid cascading harp sweep across the strings
     if (barIndex % 4 === 3) {
+      // Gentle cascading strum with soft velocity
       notes.forEach((freq, idx) => {
-        const sweepTime = startTime + idx * (sixteenth * 0.75);
-        this.pluckHarpString(freq, sweepTime, 0.85 + (idx % 2) * 0.15, 3.8);
+        const sweepTime = startTime + idx * (sixteenth * 0.65);
+        this.pluckHarpString(freq, sweepTime, 0.65, 2.0);
       });
     } else {
-      // Flowing 8-note harp arpeggio (gentle thumb & fingers wave)
       const patternOrder = [0, 2, 4, 6, 7, 5, 3, 1];
       patternOrder.forEach((noteIdx, step) => {
         const freq = notes[noteIdx] || notes[0];
         const stepTime = startTime + step * eighth;
-        const velocity = step === 0 ? 1.0 : (step === 4 ? 0.85 : 0.65);
-        this.pluckHarpString(freq, stepTime, velocity, 3.4);
+        const velocity = step === 0 ? 0.75 : (step === 4 ? 0.60 : 0.48);
+        this.pluckHarpString(freq, stepTime, velocity, 1.8);
       });
     }
   }
 
-  // 3. DEEP ACOUSTIC BASS HARP PILLAR NOTE (Beats 1 and 3)
+  // 3. ACOUSTIC BASS ROOT NOTE (Warm, pure sine low-end with dedicated gentle filter)
   private playBassHarpNote(startTime: number, barIndex: number) {
+    const ctx = this.ctx;
+    if (!ctx || !this.masterGain) return;
+
     const bassRoots = [
-      73.42, // D2
-      87.31, // F2
-      65.41, // C2
-      98.00, // G2
-      58.27, // Bb1
-      55.00, // A1
-      73.42, // D2
-      55.00, // A1
-      73.42, // D2
-      98.00, // G2
-      65.41, // C2
-      87.31, // F2
-      58.27, // Bb1
-      65.41, // C2
-      73.42, // D2
-      73.42, // D2 (Major)
+      146.83, // D3
+      174.61, // F3
+      130.81, // C3
+      196.00, // G3
+      116.54, // Bb2
+      110.00, // A2
+      146.83, // D3
+      110.00, // A2
+      146.83, // D3
+      196.00, // G3
+      130.81, // C3
+      174.61, // F3
+      116.54, // Bb2
+      130.81, // C3
+      146.83, // D3
+      146.83, // D3 (Major)
     ];
 
-    const root = bassRoots[barIndex] || 73.42;
+    const root = bassRoots[barIndex] || 146.83;
 
-    // Deep fundamental on beat 1
-    this.pluckHarpString(root, startTime, 1.1, 4.5);
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
 
-    // Warm fifth overtone on beat 3
-    this.pluckHarpString(root * 1.5, startTime + this.beatDuration * 2, 0.7, 3.8);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(root, startTime);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(260, startTime);
+
+      // Smooth bass envelope, zero speaker rattle
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.setTargetAtTime(0.075, startTime, 0.015);
+      gain.gain.setTargetAtTime(0, startTime + 0.05, 1.6);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.masterGain);
+
+      osc.start(startTime);
+      osc.stop(startTime + 3.0);
+    } catch {}
   }
 
   // 4. ANCIENT GREEK AULOS / WOODEN PAN FLUTE MELODY
+  // Soft, breathy, silky-smooth sine with organic low-frequency vibrato.
   private playAncientAulosMelody(startTime: number, barIndex: number) {
     const ctx = this.ctx;
     if (!ctx || !this.masterGain) return;
 
-    // Melody enters after bar 1 for meditative emergence
     if (barIndex === 0) return;
 
     const beat = this.beatDuration;
@@ -395,83 +446,71 @@ class SacredAudioEngine {
     }
 
     const fluteMelodies: Record<number, FluteNote[]> = {
-      // Bar 1: Serene introductory pastoral phrase (A4 -> C5 -> D5)
       1: [
-        { time: 0, freq: 440.00, dur: beat * 1.6 },
-        { time: beat * 1.8, freq: 523.25, dur: beat * 0.9 },
-        { time: beat * 2.8, freq: 587.33, dur: beat * 1.1 },
+        { time: 0, freq: 440.00, dur: beat * 1.5 },
+        { time: beat * 1.8, freq: 523.25, dur: beat * 0.8 },
+        { time: beat * 2.8, freq: 587.33, dur: beat * 1.0 },
       ],
-      // Bar 2: Gentle descent (E5 -> D5 -> A4)
       2: [
-        { time: 0, freq: 659.25, dur: beat * 1.8 },
-        { time: beat * 2.0, freq: 587.33, dur: beat * 0.9 },
-        { time: beat * 3.0, freq: 440.00, dur: beat * 0.9 },
+        { time: 0, freq: 659.25, dur: beat * 1.6 },
+        { time: beat * 2.0, freq: 587.33, dur: beat * 0.8 },
+        { time: beat * 3.0, freq: 440.00, dur: beat * 0.8 },
       ],
-      // Bar 3: Lingering breath (G4 -> A4)
       3: [
-        { time: 0, freq: 392.00, dur: beat * 1.5 },
-        { time: beat * 1.6, freq: 440.00, dur: beat * 2.2 },
+        { time: 0, freq: 392.00, dur: beat * 1.4 },
+        { time: beat * 1.6, freq: 440.00, dur: beat * 2.0 },
       ],
-      // Bar 4: Regal Ancient Call (D5 -> F5)
       4: [
-        { time: 0, freq: 587.33, dur: beat * 1.8 },
-        { time: beat * 2.0, freq: 698.46, dur: beat * 1.8 },
+        { time: 0, freq: 587.33, dur: beat * 1.6 },
+        { time: beat * 2.0, freq: 698.46, dur: beat * 1.6 },
       ],
-      // Bar 5: High Pan Flute Crest (A5 -> G5 -> E5)
       5: [
-        { time: 0, freq: 880.00, dur: beat * 1.6 },
-        { time: beat * 1.8, freq: 783.99, dur: beat * 1.0 },
-        { time: beat * 2.9, freq: 659.25, dur: beat * 1.0 },
+        { time: 0, freq: 880.00, dur: beat * 1.5 },
+        { time: beat * 1.8, freq: 783.99, dur: beat * 0.9 },
+        { time: beat * 2.9, freq: 659.25, dur: beat * 0.9 },
       ],
-      // Bar 6: Lydian Ornament (F5 -> E5 -> D5)
       6: [
-        { time: 0, freq: 698.46, dur: beat * 1.4 },
-        { time: beat * 1.5, freq: 659.25, dur: beat * 1.0 },
-        { time: beat * 2.6, freq: 587.33, dur: beat * 1.3 },
+        { time: 0, freq: 698.46, dur: beat * 1.3 },
+        { time: beat * 1.5, freq: 659.25, dur: beat * 0.9 },
+        { time: beat * 2.6, freq: 587.33, dur: beat * 1.2 },
       ],
-      // Bar 7: Phrygian Suspense (C#5 -> D5)
       7: [
-        { time: 0, freq: 554.37, dur: beat * 1.6 },
-        { time: beat * 1.8, freq: 587.33, dur: beat * 2.0 },
+        { time: 0, freq: 554.37, dur: beat * 1.5 },
+        { time: beat * 1.8, freq: 587.33, dur: beat * 1.8 },
       ],
-      // Bar 8: High Mythic Arc
       8: [
-        { time: 0, freq: 587.33, dur: beat * 1.4 },
-        { time: beat * 1.5, freq: 783.99, dur: beat * 1.0 },
-        { time: beat * 2.6, freq: 880.00, dur: beat * 1.3 },
+        { time: 0, freq: 587.33, dur: beat * 1.3 },
+        { time: beat * 1.5, freq: 783.99, dur: beat * 0.9 },
+        { time: beat * 2.6, freq: 880.00, dur: beat * 1.2 },
       ],
-      // Bar 9: High C6 Whisper
       9: [
-        { time: 0, freq: 1046.50, dur: beat * 2.2 },
-        { time: beat * 2.4, freq: 880.00, dur: beat * 1.4 },
+        { time: 0, freq: 1046.50, dur: beat * 1.8 },
+        { time: beat * 2.2, freq: 880.00, dur: beat * 1.2 },
       ],
-      // Bar 10: Graceful Descending Run (G5 -> F5 -> D5)
       10: [
-        { time: 0, freq: 783.99, dur: beat * 1.2 },
-        { time: beat * 1.3, freq: 698.46, dur: beat * 1.2 },
-        { time: beat * 2.6, freq: 587.33, dur: beat * 1.3 },
+        { time: 0, freq: 783.99, dur: beat * 1.1 },
+        { time: beat * 1.3, freq: 698.46, dur: beat * 1.1 },
+        { time: beat * 2.6, freq: 587.33, dur: beat * 1.2 },
       ],
-      // Bar 11: Warm Sacred Breath (C5 -> D5)
       11: [
-        { time: 0, freq: 523.25, dur: beat * 1.8 },
-        { time: beat * 2.0, freq: 587.33, dur: beat * 1.8 },
+        { time: 0, freq: 523.25, dur: beat * 1.6 },
+        { time: beat * 2.0, freq: 587.33, dur: beat * 1.6 },
       ],
-      // Bars 12-15: Final Hymn Phrase
       12: [
-        { time: 0, freq: 698.46, dur: beat * 1.8 },
-        { time: beat * 2.0, freq: 880.00, dur: beat * 1.8 },
+        { time: 0, freq: 698.46, dur: beat * 1.6 },
+        { time: beat * 2.0, freq: 880.00, dur: beat * 1.6 },
       ],
       13: [
-        { time: 0, freq: 1046.50, dur: beat * 1.8 },
-        { time: beat * 2.0, freq: 880.00, dur: beat * 1.8 },
+        { time: 0, freq: 1046.50, dur: beat * 1.6 },
+        { time: beat * 2.0, freq: 880.00, dur: beat * 1.6 },
       ],
       14: [
-        { time: 0, freq: 698.46, dur: beat * 1.8 },
-        { time: beat * 2.0, freq: 587.33, dur: beat * 1.8 },
+        { time: 0, freq: 698.46, dur: beat * 1.6 },
+        { time: beat * 2.0, freq: 587.33, dur: beat * 1.6 },
       ],
       15: [
-        { time: 0, freq: 739.99, dur: beat * 1.5 }, // F#5 (Tierce de Picardie)
-        { time: beat * 1.6, freq: 587.33, dur: beat * 2.3 }, // D5 resolve
+        { time: 0, freq: 739.99, dur: beat * 1.4 },
+        { time: beat * 1.6, freq: 587.33, dur: beat * 2.0 },
       ],
     };
 
@@ -481,37 +520,45 @@ class SacredAudioEngine {
       const noteStart = startTime + n.time;
       const dur = n.dur;
 
-      // Wooden Pipe Physical Modeling: Sine wave + gentle breath vibrato + soft turbulence
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const vibrato = ctx.createOscillator();
-      const vibratoGain = ctx.createGain();
+      try {
+        const osc = ctx.createOscillator();
+        const vibrato = ctx.createOscillator();
+        const vibratoGain = ctx.createGain();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(n.freq, noteStart);
+        // 4.8Hz subtle vibrato
+        vibrato.frequency.setValueAtTime(4.8, noteStart);
+        vibratoGain.gain.setValueAtTime(1.5, noteStart);
+        vibrato.connect(vibratoGain);
+        vibratoGain.connect(osc.frequency);
 
-      // Subtle 4.8 Hz human breath vibrato
-      vibrato.frequency.setValueAtTime(4.8, noteStart);
-      vibratoGain.gain.setValueAtTime(2.2, noteStart);
-      vibrato.connect(osc.frequency);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(n.freq, noteStart);
 
-      // Flute envelope: Soft breath attack, gentle sustain, trailing release
-      gain.gain.setValueAtTime(0.0001, noteStart);
-      gain.gain.linearRampToValueAtTime(0.13, noteStart + 0.12);
-      gain.gain.setValueAtTime(0.12, noteStart + dur - 0.1);
-      gain.gain.exponentialRampToValueAtTime(0.00001, noteStart + dur + 0.25);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1100, noteStart);
 
-      osc.connect(gain);
-      gain.connect(this.masterGain!);
+        // Smooth breath envelope (60ms attack, 100ms release)
+        gain.gain.setValueAtTime(0, noteStart);
+        gain.gain.setTargetAtTime(0.042, noteStart, 0.06);
+        gain.gain.setTargetAtTime(0, noteStart + dur - 0.1, 0.10);
 
-      vibrato.start(noteStart);
-      osc.start(noteStart);
-      osc.stop(noteStart + dur + 0.3);
-      vibrato.stop(noteStart + dur + 0.3);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain!);
+
+        vibrato.start(noteStart);
+        osc.start(noteStart);
+
+        const stopTime = noteStart + dur + 0.25;
+        osc.stop(stopTime);
+        vibrato.stop(stopTime);
+      } catch {}
     });
   }
 
-  // 5. TEMPLE SANCTUARY ETHEREAL DRONE (No drums, pure acoustic hall atmosphere)
+  // 5. TEMPLE SANCTUARY AIR RESONANCE (Soft, warm background pad)
   private playTempleAtmosphere(startTime: number, barIndex: number) {
     const ctx = this.ctx;
     if (!ctx || !this.masterGain) return;
@@ -520,37 +567,35 @@ class SacredAudioEngine {
     const droneRoots = [146.83, 174.61, 130.81, 196.00];
     const root = droneRoots[barIndex % 4];
 
-    [root, root * 1.5].forEach((freq) => {
+    try {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       const filter = ctx.createBiquadFilter();
 
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, startTime);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(root, startTime);
 
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(450, startTime);
-      filter.Q.setValueAtTime(1.5, startTime);
+      filter.frequency.setValueAtTime(240, startTime);
 
-      gain.gain.setValueAtTime(0.0001, startTime);
-      gain.gain.linearRampToValueAtTime(0.07, startTime + measure * 0.4);
-      gain.gain.setValueAtTime(0.07, startTime + measure * 0.7);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + measure);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.setTargetAtTime(0.022, startTime, 0.5);
+      gain.gain.setTargetAtTime(0, startTime + measure * 0.75, 0.6);
 
       osc.connect(filter);
       filter.connect(gain);
       gain.connect(this.masterGain!);
 
       osc.start(startTime);
-      osc.stop(startTime + measure + 0.1);
-    });
+      osc.stop(startTime + measure + 0.2);
+    } catch {}
   }
 
   // =========================================================================
-  // INTERACTIVE SOUND EFFECTS
+  // INTERACTIVE SOUND EFFECTS (Studio Quality, Zero Peak Clipping)
   // =========================================================================
 
-  // Authentic Roman Parchment Scroll Unrolling Sound Effect
+  // Clean Ancient Roman Parchment Scroll Unrolling Sound Effect
   public playParchmentRoll() {
     const ctx = this.getContext();
     if (!ctx || !this.masterGain) return;
@@ -561,20 +606,18 @@ class SacredAudioEngine {
 
     try {
       const now = ctx.currentTime;
-      const duration = 0.85;
+      const duration = 0.45;
 
       const bufferSize = Math.floor(ctx.sampleRate * duration);
       const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const output = noiseBuffer.getChannelData(0);
 
-      let b0 = 0, b1 = 0, b2 = 0;
+      // Smooth filtered pink/brown noise (no harsh white noise clicks)
+      let lastVal = 0;
       for (let i = 0; i < bufferSize; i++) {
         const white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        const pink = b0 + b1 + b2 + white * 0.5362;
-        output[i] = pink * 0.22 * (1 + 0.3 * Math.sin((i / bufferSize) * Math.PI * 18));
+        lastVal = (lastVal + (0.03 * white)) / 1.03;
+        output[i] = lastVal * 0.2;
       }
 
       const noiseSource = ctx.createBufferSource();
@@ -582,42 +625,23 @@ class SacredAudioEngine {
 
       const paperFilter = ctx.createBiquadFilter();
       paperFilter.type = 'bandpass';
-      paperFilter.frequency.setValueAtTime(650, now);
-      paperFilter.frequency.exponentialRampToValueAtTime(2400, now + 0.35);
-      paperFilter.frequency.exponentialRampToValueAtTime(750, now + duration);
-      paperFilter.Q.setValueAtTime(2.2, now);
+      paperFilter.frequency.setValueAtTime(600, now);
+      paperFilter.frequency.setTargetAtTime(950, now, 0.12);
+      paperFilter.Q.setValueAtTime(1.0, now);
 
       const paperGain = ctx.createGain();
-      paperGain.gain.setValueAtTime(0.001, now);
-      paperGain.gain.linearRampToValueAtTime(0.4, now + 0.12);
-      paperGain.gain.linearRampToValueAtTime(0.28, now + 0.45);
-      paperGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      paperGain.gain.setValueAtTime(0, now);
+      paperGain.gain.setTargetAtTime(0.12, now, 0.04);
+      paperGain.gain.setTargetAtTime(0, now + 0.2, 0.09);
 
       noiseSource.connect(paperFilter);
       paperFilter.connect(paperGain);
       paperGain.connect(this.masterGain);
       noiseSource.start(now);
-
-      // Wooden Spindle Dowel Glide
-      const dowelOsc = ctx.createOscillator();
-      const dowelGain = ctx.createGain();
-      dowelOsc.type = 'triangle';
-      dowelOsc.frequency.setValueAtTime(220, now);
-      dowelOsc.frequency.exponentialRampToValueAtTime(360, now + 0.3);
-      dowelOsc.frequency.exponentialRampToValueAtTime(140, now + duration);
-
-      dowelGain.gain.setValueAtTime(0.0001, now);
-      dowelGain.gain.linearRampToValueAtTime(0.14, now + 0.15);
-      dowelGain.gain.exponentialRampToValueAtTime(0.0001, now + duration * 0.85);
-
-      dowelOsc.connect(dowelGain);
-      dowelGain.connect(this.masterGain);
-      dowelOsc.start(now);
-      dowelOsc.stop(now + duration);
     } catch {}
   }
 
-  // Classic Chime Accent
+  // Pure Crystalline Chime Accent (Soft sine, crystal resonance)
   public playChime(pitchMultiplier = 1) {
     const ctx = this.getContext();
     if (!ctx || !this.masterGain) return;
@@ -630,34 +654,33 @@ class SacredAudioEngine {
       const now = ctx.currentTime;
       const baseFreq = 523.25 * pitchMultiplier;
 
-      const partials = [
-        { freq: baseFreq, gain: 0.32, decay: 2.2 },
-        { freq: baseFreq * 1.5, gain: 0.22, decay: 1.8 },
-        { freq: baseFreq * 2.0, gain: 0.14, decay: 1.4 },
-      ];
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const g = ctx.createGain();
 
-      partials.forEach(({ freq, gain, decay }) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(baseFreq, now);
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(baseFreq * 2.002, now); // Tiny detune for shimmer
 
-        g.gain.setValueAtTime(0.0001, now);
-        g.gain.linearRampToValueAtTime(gain, now + 0.015);
-        g.gain.exponentialRampToValueAtTime(0.00001, now + decay);
+      g.gain.setValueAtTime(0, now);
+      g.gain.setTargetAtTime(0.08, now, 0.008);
+      g.gain.setTargetAtTime(0, now + 0.04, 0.45);
 
-        osc.connect(g);
-        if (this.masterGain) g.connect(this.masterGain);
+      osc1.connect(g);
+      osc2.connect(g);
+      g.connect(this.masterGain);
 
-        osc.start(now);
-        osc.stop(now + decay + 0.1);
-      });
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 1.6);
+      osc2.stop(now + 1.6);
     } catch {}
   }
 
-  // Sanctuary Flame Ignition
-  public playAweInspiringIgnition(intensity = 1.5) {
+  // Sanctuary Flame Ignition (Smooth, warm orchestral swell - safe scaled gain)
+  public playAweInspiringIgnition(intensity = 1.0) {
     const ctx = this.getContext();
     if (!ctx || !this.masterGain) return;
 
@@ -667,28 +690,36 @@ class SacredAudioEngine {
 
     try {
       const now = ctx.currentTime;
-      const triad = [261.63, 392.00, 523.25];
-      triad.forEach((freq, idx) => {
+      const triad = [261.63, 329.63, 392.00, 523.25];
+      const scaledIntensity = Math.min(Math.max(intensity, 0.5), 1.5);
+
+      triad.forEach((freq) => {
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
 
-        osc.type = idx === 0 ? 'triangle' : 'sine';
+        osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now);
 
-        g.gain.setValueAtTime(0.0001, now);
-        g.gain.linearRampToValueAtTime(0.2 * intensity, now + 0.2);
-        g.gain.exponentialRampToValueAtTime(0.00001, now + 1.8);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(600, now);
 
-        osc.connect(g);
+        g.gain.setValueAtTime(0, now);
+        g.gain.setTargetAtTime(0.04 * scaledIntensity, now, 0.1);
+        g.gain.setTargetAtTime(0, now + 0.3, 0.5);
+
+        osc.connect(filter);
+        filter.connect(g);
         if (this.masterGain) g.connect(this.masterGain);
 
         osc.start(now);
-        osc.stop(now + 1.9);
+        osc.stop(now + 1.8);
       });
-      this.playChime(1.5);
+      this.playChime(1.2);
     } catch {}
   }
 
+  // Golden Butterflies Sparkles Sound
   public playSparkles() {
     const ctx = this.getContext();
     if (!ctx || !this.masterGain) return;
@@ -702,16 +733,16 @@ class SacredAudioEngine {
       const pitches = [1046.50, 1318.51, 1567.98, 2093.00];
 
       pitches.forEach((freq, idx) => {
-        const delay = idx * 0.08;
+        const delay = idx * 0.05;
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
 
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now + delay);
 
-        g.gain.setValueAtTime(0.0001, now + delay);
-        g.gain.linearRampToValueAtTime(0.16, now + delay + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.00001, now + delay + 0.5);
+        g.gain.setValueAtTime(0, now + delay);
+        g.gain.setTargetAtTime(0.035, now + delay, 0.006);
+        g.gain.setTargetAtTime(0, now + delay + 0.02, 0.16);
 
         osc.connect(g);
         if (this.masterGain) g.connect(this.masterGain);

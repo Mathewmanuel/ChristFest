@@ -109,8 +109,8 @@ export const AboutSection: React.FC = () => {
             <Sparkles className="w-5 h-5 text-[#04120d] animate-pulse" />
             <span>
               {language === 'ta'
-                ? '35 ஆண்டுகால வரலாற்று ஆவணக் குறிப்பு'
-                : 'VIEW FULL 35-YEAR ARCHIVE & RECORD'}
+                ? 'மேலும் அறிய கிளிக் செய்க'
+                : 'Click to Know More'}
             </span>
             <ChevronRight className="w-5 h-5 text-[#04120d] group-hover:translate-x-1.5 transition-transform" />
           </button>

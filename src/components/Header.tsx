@@ -8,7 +8,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ activeSection }) => {
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);

@@ -9,10 +9,10 @@
     
     <!-- Imperial Gold Gradient -->
     <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fff4cc"/>
-      <stop offset="30%" stop-color="#f5d77f"/>
-      <stop offset="65%" stop-color="#d4af37"/>
-      <stop offset="100%" stop-color="#996515"/>
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="25%" stop-color="#fef08a"/>
+      <stop offset="65%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
     </linearGradient>
 
     <!-- Glowing Aura Gradient -->

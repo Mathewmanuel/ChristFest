@@ -93,7 +93,7 @@ export const MobilePillars3D: React.FC<MobilePillars3DProps> = ({ onColumnTouch 
       }
 
       // Engraved Greek Inscription Bands
-      ctx.fillStyle = '#b8860b';
+      ctx.fillStyle = '#f59e0b';
       ctx.font = 'bold 36px Georgia, serif';
       ctx.textAlign = 'center';
       ctx.fillText('ΚΛΗΣΙΣ • 1 TIMOTHY 6:12', 512, 300);
@@ -127,7 +127,7 @@ export const MobilePillars3D: React.FC<MobilePillars3DProps> = ({ onColumnTouch 
     });
 
     const darkGoldMat = new THREE.MeshStandardMaterial({
-      color: 0xb8860b,
+      color: 0xf59e0b,
       metalness: 0.85,
       roughness: 0.25,
     });

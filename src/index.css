@@ -16,15 +16,17 @@
     line-height: 1.6;
   }
 
-  /* Gold Gradient Typography */
+  /* Radiant Gold Gradient Typography (Never muddies to brown) */
   .text-gold-gradient {
-    background: linear-gradient(135deg, #FFF1B0 0%, #D4AF37 50%, #AA7C11 100%);
+    color: #FBBF24;
+    background: linear-gradient(135deg, #FFFDEB 0%, #FDE047 25%, #F59E0B 65%, #EAB308 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   /* Emerald Gradient Typography */
   .text-emerald-gradient {
+    color: #34D399;
     background: linear-gradient(135deg, #A7F3D0 0%, #10B981 50%, #047857 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -48,8 +50,8 @@
 
   /* Gold Foil Border */
   .gold-border-glow {
-    border: 1px solid #D4AF37;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+    border: 1px solid #F59E0B;
+    box-shadow: 0 0 18px rgba(245, 158, 11, 0.35);
   }
 
   /* Emerald Border Glow */

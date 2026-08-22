@@ -165,33 +165,33 @@ export const GeneralRulesSection: React.FC = () => {
             transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
           >
             {/* Left Carved Wooden Finial & Gold Ring Cap */}
-            <div className="w-8 sm:w-12 h-10 sm:h-14 rounded-l-full bg-gradient-to-r from-[#D4AF37] via-[#8c5924] via-40% to-[#2d180b] border-y-2 border-l-2 border-[#FFE898] shadow-[0_12px_24px_rgba(0,0,0,0.95)] flex items-center justify-center relative shrink-0">
-              <div className="w-2.5 sm:w-3.5 h-6 sm:h-8 rounded-full bg-gradient-to-b from-[#FFF2B2] via-[#D4AF37] to-[#8C5924] shadow-inner" />
-              <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-[#1a0e06] shadow-sm" />
+            <div className="w-8 sm:w-12 h-10 sm:h-14 rounded-l-full bg-gradient-to-r from-[#FEF08A] via-[#F59E0B] via-40% to-[#B45309] border-y-2 border-l-2 border-[#FFFDF0] shadow-[0_12px_24px_rgba(0,0,0,0.95)] flex items-center justify-center relative shrink-0">
+              <div className="w-2.5 sm:w-3.5 h-6 sm:h-8 rounded-full bg-gradient-to-b from-[#FFFDF0] via-[#FEF08A] to-[#F59E0B] shadow-inner" />
+              <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-[#0B3D2E] shadow-sm" />
             </div>
 
             {/* Horizontal Cylinder Core (Specular cylindrical 3D gradient + parchment spiral grooves) */}
-            <div className="flex-1 h-9 sm:h-12 bg-gradient-to-b from-[#FFF9EE] via-[#d5be90] via-30% to-[#48280f] border-y-2 border-[#D4AF37] shadow-[0_14px_28px_rgba(0,0,0,0.95),inset_0_3px_6px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.65)] flex items-center justify-between px-4 sm:px-8 relative overflow-hidden">
+            <div className="flex-1 h-9 sm:h-12 bg-gradient-to-b from-[#FFFDF0] via-[#FDE047] via-30% to-[#B45309] border-y-2 border-[#F59E0B] shadow-[0_14px_28px_rgba(0,0,0,0.95),inset_0_3px_6px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.45)] flex items-center justify-between px-4 sm:px-8 relative overflow-hidden">
               {/* Coiled Parchment Layers Effect */}
-              <div className="absolute inset-0 opacity-25 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_18px)] pointer-events-none" />
+              <div className="absolute inset-0 opacity-15 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_18px)] pointer-events-none" />
               
               {/* Top Specular Highlight Gleam along cylinder apex */}
-              <div className="absolute inset-x-0 top-1 h-1.5 bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 top-1 h-1.5 bg-gradient-to-r from-transparent via-white/90 to-transparent pointer-events-none" />
               
               {/* Ancient Roman Medallion Boss Insets */}
-              <div className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-[#D4AF37] border-2 border-[#2d180b] shadow-md flex items-center justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#2d180b]" />
+              <div className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-[#FEF08A] border-2 border-[#B45309] shadow-md flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#B45309]" />
               </div>
-              <div className="h-1 flex-1 mx-3 sm:mx-6 rounded-full bg-gradient-to-r from-transparent via-[#2d180b]/35 to-transparent" />
-              <div className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-[#D4AF37] border-2 border-[#2d180b] shadow-md flex items-center justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#2d180b]" />
+              <div className="h-1 flex-1 mx-3 sm:mx-6 rounded-full bg-gradient-to-r from-transparent via-[#F59E0B]/50 to-transparent" />
+              <div className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-[#FEF08A] border-2 border-[#B45309] shadow-md flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#B45309]" />
               </div>
             </div>
 
             {/* Right Carved Wooden Finial & Gold Ring Cap */}
-            <div className="w-8 sm:w-12 h-10 sm:h-14 rounded-r-full bg-gradient-to-l from-[#D4AF37] via-[#8c5924] via-40% to-[#2d180b] border-y-2 border-r-2 border-[#FFE898] shadow-[0_12px_24px_rgba(0,0,0,0.95)] flex items-center justify-center relative shrink-0">
-              <div className="w-2.5 sm:w-3.5 h-6 sm:h-8 rounded-full bg-gradient-to-b from-[#FFF2B2] via-[#D4AF37] to-[#8C5924] shadow-inner" />
-              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#1a0e06] shadow-sm" />
+            <div className="w-8 sm:w-12 h-10 sm:h-14 rounded-r-full bg-gradient-to-l from-[#FEF08A] via-[#F59E0B] via-40% to-[#B45309] border-y-2 border-r-2 border-[#FFFDF0] shadow-[0_12px_24px_rgba(0,0,0,0.95)] flex items-center justify-center relative shrink-0">
+              <div className="w-2.5 sm:w-3.5 h-6 sm:h-8 rounded-full bg-gradient-to-b from-[#FFFDF0] via-[#FEF08A] to-[#F59E0B] shadow-inner" />
+              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#0B3D2E] shadow-sm" />
             </div>
           </motion.div>
 
@@ -199,52 +199,52 @@ export const GeneralRulesSection: React.FC = () => {
           {/* 2. AGED WEATHERED PARCHMENT SHEET (EXTENDING DOWNWARD ON UNROLL)        */}
           {/* ======================================================================= */}
           <div 
-            className="relative z-20 mx-3 sm:mx-6 rounded-b-xl border-x-4 sm:border-x-8 border-[#633a17]/80 shadow-[inset_35px_0_45px_rgba(95,55,18,0.3),inset_-35px_0_45px_rgba(95,55,18,0.3),inset_0_25px_35px_rgba(60,35,10,0.4),0_30px_70px_rgba(0,0,0,0.9)] overflow-hidden transition-all duration-500 ease-out"
+            className="relative z-20 mx-3 sm:mx-6 rounded-b-xl border-x-4 sm:border-x-8 border-[#D4AF37]/70 shadow-[inset_35px_0_45px_rgba(212,175,55,0.15),inset_-35px_0_45px_rgba(212,175,55,0.15),inset_0_25px_35px_rgba(11,61,46,0.2),0_30px_70px_rgba(0,0,0,0.9)] overflow-hidden transition-all duration-500 ease-out"
             style={{
-              backgroundColor: '#f5edd4',
+              backgroundColor: '#fbf8ed',
               backgroundImage: `
-                radial-gradient(#b3915f 0.9px, transparent 0.9px),
-                radial-gradient(circle at 10% 20%, rgba(139,90,43,0.09) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(139,90,43,0.13) 0%, transparent 45%),
-                linear-gradient(180deg, #fffcf5 0%, #faeed0 25%, #f3e2ba 70%, #ebd29c 100%)
+                radial-gradient(#d4af37 0.9px, transparent 0.9px),
+                radial-gradient(circle at 10% 20%, rgba(212,175,55,0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(212,175,55,0.1) 0%, transparent 45%),
+                linear-gradient(180deg, #ffffff 0%, #fdfbf3 25%, #fcf6e4 70%, #faeed0 100%)
               `,
               backgroundSize: '20px 20px, 100% 100%, 100% 100%, 100% 100%'
             }}
           >
             {/* Top Inward Curled Parchment Cavity Shadow */}
-            <div className="h-6 sm:h-8 bg-gradient-to-b from-[#241306]/70 via-[#3a200a]/25 to-transparent pointer-events-none" />
+            <div className="h-6 sm:h-8 bg-gradient-to-b from-[#0B3D2E]/30 via-[#0B3D2E]/10 to-transparent pointer-events-none" />
 
-            {/* Weathered / Darkened Deckle Side Edges Simulation */}
-            <div className="absolute inset-y-0 left-0 w-3 sm:w-5 bg-gradient-to-r from-[#3d220c]/40 via-[#3d220c]/15 to-transparent pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-3 sm:w-5 bg-gradient-to-l from-[#3d220c]/40 via-[#3d220c]/15 to-transparent pointer-events-none" />
+            {/* Weathered / Gold-kissed Side Edges Simulation */}
+            <div className="absolute inset-y-0 left-0 w-3 sm:w-5 bg-gradient-to-r from-[#D4AF37]/20 via-[#D4AF37]/5 to-transparent pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-3 sm:w-5 bg-gradient-to-l from-[#D4AF37]/20 via-[#D4AF37]/5 to-transparent pointer-events-none" />
 
             {/* Inner Parchment Typography & Controls */}
             <div className="px-4 sm:px-12 pt-1 pb-8">
               
               {/* Greek Key Classical Meander Inscription */}
-              <div className="mb-6 opacity-85">
-                <GreekKeyBorder height={15} color="#633a17" />
+              <div className="mb-6 opacity-90">
+                <GreekKeyBorder height={15} color="#F59E0B" />
               </div>
 
               {/* ================= HEADER SECTION ================= */}
               <div 
                 onClick={!isUnrolled ? handleOpen : undefined}
-                className={`text-center pb-6 border-b-2 border-[#8c5930]/35 relative ${!isUnrolled ? 'cursor-pointer group' : ''}`}
+                className={`text-center pb-6 border-b-2 border-[#D4AF37]/40 relative ${!isUnrolled ? 'cursor-pointer group' : ''}`}
               >
                 {/* Festival Crest Ribbon Badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#0B3D2E] via-[#14533d] to-[#0B3D2E] text-[#D4AF37] text-xs sm:text-sm font-serif font-black uppercase tracking-widest mb-3 shadow-[0_4px_12px_rgba(0,0,0,0.35)] border border-[#D4AF37]/80">
-                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#0B3D2E] via-[#14533d] to-[#0B3D2E] text-[#FEF08A] text-xs sm:text-sm font-serif font-black uppercase tracking-widest mb-3 shadow-[0_4px_12px_rgba(0,0,0,0.35)] border border-[#F59E0B]">
+                  <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
                   <span>KLESIS 2026 • 35TH CHRISTFEST</span>
-                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
                 </div>
 
                 {/* EXTRA BOLD 3D RELIEF TITLE */}
-                <h3 className="font-serif font-black text-3xl sm:text-5xl text-[#0B3D2E] tracking-tight sm:tracking-normal uppercase drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)] [text-shadow:_0_2px_0_#d8b97d,_0_4px_8px_rgba(0,0,0,0.25)]">
+                <h3 className="font-serif font-black text-3xl sm:text-5xl text-[#0B3D2E] tracking-tight sm:tracking-normal uppercase drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)] [text-shadow:_0_2px_0_#fde047,_0_4px_8px_rgba(0,0,0,0.2)]">
                   {language === 'ta' ? 'GENERAL RULES:' : 'GENERAL RULES:'}
                 </h3>
                 
                 {/* Subtitle */}
-                <h4 className="font-serif font-extrabold text-base sm:text-2xl text-[#633C19] uppercase tracking-wider mt-1 drop-shadow-xs">
+                <h4 className="font-serif font-extrabold text-base sm:text-2xl text-[#0B3D2E] uppercase tracking-wider mt-1 drop-shadow-xs">
                   {language === 'ta' ? 'General Rules & Regulations (பொது விதிமுறைகள்)' : 'General Rules and Regulations'}
                 </h4>
 
@@ -256,18 +256,18 @@ export const GeneralRulesSection: React.FC = () => {
                         e.stopPropagation();
                         handleOpen();
                       }}
-                      className="inline-flex items-center gap-3 px-6 sm:px-9 py-3 rounded-full text-xs sm:text-base font-serif font-black tracking-wide uppercase transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.35)] transform hover:scale-105 cursor-pointer bg-gradient-to-r from-[#0B3D2E] via-[#14533d] to-[#0B3D2E] text-[#D4AF37] border-2 border-[#D4AF37] animate-pulse-gold hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]"
+                      className="inline-flex items-center gap-3 px-6 sm:px-9 py-3 rounded-full text-xs sm:text-base font-serif font-black tracking-wide uppercase transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.35)] transform hover:scale-105 cursor-pointer bg-gradient-to-r from-[#0B3D2E] via-[#14533d] to-[#0B3D2E] text-[#FEF08A] border-2 border-[#F59E0B] animate-pulse-gold hover:shadow-[0_0_30px_rgba(245,158,11,0.6)]"
                     >
-                      <ScrollIcon className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] shrink-0" />
+                      <ScrollIcon className="w-4 h-4 sm:w-5 sm:h-5 text-[#F59E0B] shrink-0" />
                       <span>
                         {language === 'ta' 
                           ? 'விதிமுறைகள் அனைத்தையும் காண கிளிக் செய்க (Click to view all rules)' 
                           : 'Click to view all rules'}
                       </span>
-                      <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] shrink-0" />
+                      <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-[#F59E0B] shrink-0" />
                     </button>
                   ) : (
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#0B3D2E]/10 border border-[#8B5A2B]/40 text-[#0B3D2E] text-xs sm:text-sm font-serif font-bold tracking-wide">
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#0B3D2E]/10 border border-[#D4AF37]/50 text-[#0B3D2E] text-xs sm:text-sm font-serif font-bold tracking-wide">
                       <Check className="w-4 h-4 text-[#0B3D2E]" />
                       <span>
                         {language === 'ta' 
@@ -304,11 +304,11 @@ export const GeneralRulesSection: React.FC = () => {
                             y: 0,
                             transition: { delay: 0.05 + idx * 0.04, duration: 0.3 }
                           }}
-                          className="flex items-start gap-3.5 sm:gap-5 p-4 sm:p-5 rounded-xl bg-white/85 hover:bg-white border-2 border-[#8B5A2B]/30 shadow-[0_4px_14px_rgba(0,0,0,0.06)] transition-all hover:border-[#8B5A2B]/60"
+                          className="flex items-start gap-3.5 sm:gap-5 p-4 sm:p-5 rounded-xl bg-white/95 hover:bg-white border-2 border-[#D4AF37]/40 shadow-[0_4px_14px_rgba(0,0,0,0.06)] transition-all hover:border-[#F59E0B]"
                         >
                           {/* 3D Roman Numeral Wax Seal Tile */}
                           <div className="shrink-0 pt-0.5">
-                            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#0B3D2E] via-[#0e4433] to-[#051c14] text-[#D4AF37] border-2 border-[#D4AF37] flex items-center justify-center font-serif font-black text-sm sm:text-base shadow-[0_4px_10px_rgba(0,0,0,0.35)]">
+                            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#0B3D2E] via-[#0e4433] to-[#051c14] text-[#FEF08A] border-2 border-[#F59E0B] flex items-center justify-center font-serif font-black text-sm sm:text-base shadow-[0_4px_10px_rgba(0,0,0,0.35)]">
                               {rule.numeral}
                             </div>
                           </div>
@@ -332,10 +332,10 @@ export const GeneralRulesSection: React.FC = () => {
                       <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1, transition: { delay: 0.3 } }}
-                        className="mt-10 pt-6 border-t-2 border-[#8B5A2B]/35 flex items-center justify-center text-center"
+                        className="mt-10 pt-6 border-t-2 border-[#D4AF37]/40 flex items-center justify-center text-center"
                       >
                         <div className="flex items-center justify-center gap-2.5 text-xs sm:text-sm font-serif font-extrabold text-[#0B3D2E]">
-                          <ShieldCheck className="w-5 h-5 text-[#8B5A2B] shrink-0" />
+                          <ShieldCheck className="w-5 h-5 text-[#F59E0B] shrink-0" />
                           <span>
                             {language === 'ta'
                               ? 'CII தாம்பரம் TELC நிர்வாகக் குழுவினால் அங்கீகரிக்கப்பட்டது'
@@ -349,14 +349,14 @@ export const GeneralRulesSection: React.FC = () => {
               </AnimatePresence>
 
               {/* Bottom Greek Key meander border */}
-              <div className="mt-7 opacity-85">
-                <GreekKeyBorder height={15} color="#633a17" />
+              <div className="mt-7 opacity-90">
+                <GreekKeyBorder height={15} color="#F59E0B" />
               </div>
 
             </div>
 
             {/* Bottom Inward Curled Parchment Cavity Shadow */}
-            <div className="h-6 sm:h-8 bg-gradient-to-t from-[#241306]/70 via-[#3a200a]/25 to-transparent pointer-events-none" />
+            <div className="h-6 sm:h-8 bg-gradient-to-t from-[#0B3D2E]/30 via-[#0B3D2E]/10 to-transparent pointer-events-none" />
           </div>
 
           {/* ======================================================================= */}
@@ -375,29 +375,29 @@ export const GeneralRulesSection: React.FC = () => {
             }}
           >
             {/* Left Carved Wooden Finial & Gold Ring Cap */}
-            <div className="w-8 sm:w-12 h-10 sm:h-14 rounded-l-full bg-gradient-to-r from-[#D4AF37] via-[#8c5924] via-40% to-[#2d180b] border-y-2 border-l-2 border-[#FFE898] shadow-[0_16px_32px_rgba(0,0,0,0.98)] flex items-center justify-center relative shrink-0">
-              <div className="w-2.5 sm:w-3.5 h-6 sm:h-8 rounded-full bg-gradient-to-b from-[#FFF2B2] via-[#D4AF37] to-[#8C5924] shadow-inner" />
-              <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-[#1a0e06] shadow-sm" />
+            <div className="w-8 sm:w-12 h-10 sm:h-14 rounded-l-full bg-gradient-to-r from-[#FEF08A] via-[#F59E0B] via-40% to-[#B45309] border-y-2 border-l-2 border-[#FFFDF0] shadow-[0_16px_32px_rgba(0,0,0,0.98)] flex items-center justify-center relative shrink-0">
+              <div className="w-2.5 sm:w-3.5 h-6 sm:h-8 rounded-full bg-gradient-to-b from-[#FFFDF0] via-[#FEF08A] to-[#F59E0B] shadow-inner" />
+              <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-[#0B3D2E] shadow-sm" />
             </div>
 
             {/* Horizontal Cylinder Core (Specular cylindrical 3D gradient) */}
-            <div className="flex-1 h-9 sm:h-12 bg-gradient-to-b from-[#FFF9EE] via-[#d5be90] via-30% to-[#48280f] border-y-2 border-[#D4AF37] shadow-[0_16px_32px_rgba(0,0,0,0.98),inset_0_3px_6px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.65)] flex items-center justify-between px-4 sm:px-8 relative overflow-hidden">
-              <div className="absolute inset-0 opacity-25 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_18px)] pointer-events-none" />
-              <div className="absolute inset-x-0 top-1 h-1.5 bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" />
+            <div className="flex-1 h-9 sm:h-12 bg-gradient-to-b from-[#FFFDF0] via-[#FDE047] via-30% to-[#B45309] border-y-2 border-[#F59E0B] shadow-[0_16px_32px_rgba(0,0,0,0.98),inset_0_3px_6px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.45)] flex items-center justify-between px-4 sm:px-8 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-15 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_18px)] pointer-events-none" />
+              <div className="absolute inset-x-0 top-1 h-1.5 bg-gradient-to-r from-transparent via-white/90 to-transparent pointer-events-none" />
               
-              <div className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-[#D4AF37] border-2 border-[#2d180b] shadow-md flex items-center justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#2d180b]" />
+              <div className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-[#FEF08A] border-2 border-[#B45309] shadow-md flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#B45309]" />
               </div>
-              <div className="h-1 flex-1 mx-3 sm:mx-6 rounded-full bg-gradient-to-r from-transparent via-[#2d180b]/35 to-transparent" />
-              <div className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-[#D4AF37] border-2 border-[#2d180b] shadow-md flex items-center justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#2d180b]" />
+              <div className="h-1 flex-1 mx-3 sm:mx-6 rounded-full bg-gradient-to-r from-transparent via-[#F59E0B]/50 to-transparent" />
+              <div className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-[#FEF08A] border-2 border-[#B45309] shadow-md flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#B45309]" />
               </div>
             </div>
 
             {/* Right Carved Wooden Finial & Gold Ring Cap */}
-            <div className="w-8 sm:w-12 h-10 sm:h-14 rounded-r-full bg-gradient-to-l from-[#D4AF37] via-[#8c5924] via-40% to-[#2d180b] border-y-2 border-r-2 border-[#FFE898] shadow-[0_16px_32px_rgba(0,0,0,0.98)] flex items-center justify-center relative shrink-0">
-              <div className="w-2.5 sm:w-3.5 h-6 sm:h-8 rounded-full bg-gradient-to-b from-[#FFF2B2] via-[#D4AF37] to-[#8C5924] shadow-inner" />
-              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#1a0e06] shadow-sm" />
+            <div className="w-8 sm:w-12 h-10 sm:h-14 rounded-r-full bg-gradient-to-l from-[#FEF08A] via-[#F59E0B] via-40% to-[#B45309] border-y-2 border-r-2 border-[#FFFDF0] shadow-[0_16px_32px_rgba(0,0,0,0.98)] flex items-center justify-center relative shrink-0">
+              <div className="w-2.5 sm:w-3.5 h-6 sm:h-8 rounded-full bg-gradient-to-b from-[#FFFDF0] via-[#FEF08A] to-[#F59E0B] shadow-inner" />
+              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#0B3D2E] shadow-sm" />
             </div>
           </motion.div>
 

@@ -120,7 +120,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
             >
               {/* Top Accent Greek Meander Pattern */}
               <div className="mb-2.5 sm:mb-3">
-                <GreekKeyBorder height={12} color="#B8860B" />
+                <GreekKeyBorder height={12} color="#F59E0B" />
               </div>
 
               <div>
@@ -133,7 +133,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                   </span>
                 </div>
 
-                <h3 className="font-serif font-bold text-base sm:text-lg text-[#0B3D2E] group-hover:text-[#B8860B] transition-colors leading-snug my-1">
+                <h3 className="font-serif font-bold text-base sm:text-lg text-[#0B3D2E] group-hover:text-[#D4AF37] transition-colors leading-snug my-1">
                   {event.title}
                 </h3>
 
@@ -142,18 +142,18 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                 </p>
               </div>
 
-              <div className="mt-4 pt-3.5 border-t border-[#B8860B]/30 space-y-2 text-xs text-stone-800">
+              <div className="mt-4 pt-3.5 border-t border-[#D4AF37]/30 space-y-2 text-xs text-stone-800">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 text-[#B8860B]" />
+                  <Clock className="w-3.5 h-3.5 text-[#F59E0B]" />
                   <span className="font-medium">{event.time}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-3.5 h-3.5 text-[#B8860B]" />
+                    <MapPin className="w-3.5 h-3.5 text-[#F59E0B]" />
                     <span className="font-medium text-stone-700 truncate max-w-[140px] sm:max-w-[160px]">{event.venue}</span>
                   </div>
                   <span className="font-serif font-bold text-[#0B3D2E] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                    {t('events.btnRules', 'View Rules')} <ChevronRight className="w-3.5 h-3.5 text-[#B8860B]" />
+                    {t('events.btnRules', 'View Rules')} <ChevronRight className="w-3.5 h-3.5 text-[#F59E0B]" />
                   </span>
                 </div>
               </div>
@@ -172,7 +172,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                     {getEventIcon(activeEvent.iconName)}
                   </div>
                   <div className="min-w-0">
-                    <span className="text-[10px] font-serif uppercase tracking-widest text-[#B8860B] font-bold block truncate">
+                    <span className="text-[10px] font-serif uppercase tracking-widest text-[#F59E0B] font-bold block truncate">
                       {activeEvent.categoryLabel}
                     </span>
                     <h3 className="font-serif font-extrabold text-base sm:text-xl text-[#0B3D2E] truncate">
@@ -191,7 +191,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                 </button>
               </div>
 
-              <GreekKeyBorder height={14} color="#B8860B" className="mb-4" />
+              <GreekKeyBorder height={14} color="#F59E0B" className="mb-4" />
 
               <p className="text-sm text-stone-700 font-sans my-4 leading-relaxed">
                 {activeEvent.description}
@@ -200,7 +200,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
               {/* Event Meta Details */}
               <div className="grid sm:grid-cols-3 gap-3 p-4 rounded-xl bg-white/90 border border-[#D4AF37]/40 my-4 text-xs">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#B8860B] shrink-0" />
+                  <Clock className="w-4 h-4 text-[#F59E0B] shrink-0" />
                   <div>
                     <span className="block text-stone-500 font-serif">{t('events.timeLabel', 'Time Slot:')}</span>
                     <span className="font-bold text-[#0B3D2E]">{activeEvent.time}</span>
@@ -208,7 +208,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-[#B8860B] shrink-0" />
+                  <MapPin className="w-4 h-4 text-[#F59E0B] shrink-0" />
                   <div>
                     <span className="block text-stone-500 font-serif">{t('events.venueLabel', 'Venue Location:')}</span>
                     <span className="font-bold text-[#0B3D2E]">{activeEvent.venue}</span>
@@ -216,7 +216,7 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
                 </div>
 
                 <div className="flex items-center gap-2 sm:col-span-1">
-                  <Trophy className="w-4 h-4 text-[#B8860B] shrink-0" />
+                  <Trophy className="w-4 h-4 text-[#F59E0B] shrink-0" />
                   <div>
                     <span className="block text-stone-500 font-serif">{t('events.prizeLabel', 'Honors & Awards:')}</span>
                     <span className="font-bold text-[#0B3D2E]">{activeEvent.awards}</span>
@@ -227,13 +227,13 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
               {/* Event Rules List */}
               <div className="my-4">
                 <h4 className="font-serif font-bold text-sm text-[#0B3D2E] uppercase tracking-wider mb-2 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#B8860B]" />
+                  <Sparkles className="w-4 h-4 text-[#F59E0B]" />
                   {language === 'ta' ? 'விதிமுறைகள் & வழிகாட்டுதல்கள்' : 'Rules & Event Guidelines'}
                 </h4>
                 <ul className="space-y-2 text-xs text-stone-700 font-sans">
                   {activeEvent.rules.map((rule, idx) => (
                     <li key={idx} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#B8860B] mt-1.5 shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] mt-1.5 shrink-0" />
                       <span className="leading-relaxed">{rule}</span>
                     </li>
                   ))}
@@ -241,9 +241,9 @@ export const EventsSection: React.FC<EventsSectionProps> = () => {
               </div>
 
               {/* Action Buttons - Removed Register Team button as requested */}
-              <div className="mt-6 pt-4 border-t border-[#B8860B]/30 flex items-center justify-between">
+              <div className="mt-6 pt-4 border-t border-[#D4AF37]/30 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-[#0B3D2E] font-serif font-semibold">
-                  <Trophy className="w-4 h-4 text-[#B8860B]" />
+                  <Trophy className="w-4 h-4 text-[#F59E0B]" />
                   <span>{activeEvent.awards}</span>
                 </div>
                 <button

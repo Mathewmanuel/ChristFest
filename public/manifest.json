@@ -1,0 +1,18 @@
+{
+  "short_name": "KLESIS 2026",
+  "name": "KLESIS 35th ChristFest 2026",
+  "description": "TELC Christ Church Tambaram 35th Inter-Church ChristFest Competitions",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#04150e",
+  "theme_color": "#d4af37",
+  "display": "standalone",
+  "orientation": "portrait"
+}

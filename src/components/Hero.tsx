@@ -137,22 +137,48 @@ export const Hero: React.FC<HeroProps> = ({ onExploreEvents }) => {
         </div>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-6 sm:mt-8 w-full max-w-md sm:max-w-none mx-auto">
-          <button
-            onClick={onExploreEvents}
-            className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5E5AB] to-[#B8860B] text-[#0a0f0d] font-serif font-bold text-sm sm:text-base uppercase tracking-widest shadow-[0_10px_25px_rgba(212,175,55,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
-          >
-            <Play className="w-4 h-4 fill-current" />
-            {t('hero.btnExplore', 'Explore Competitions')}
-          </button>
+        <div className="w-full max-w-md sm:max-w-2xl mx-auto mt-6 sm:mt-8 space-y-3 sm:space-y-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full">
+            <button
+              id="hero-explore-btn"
+              onClick={onExploreEvents}
+              className="w-full sm:flex-1 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#0B3D2E]/90 border-2 border-[#D4AF37] text-[#D4AF37] font-serif font-bold text-sm sm:text-base uppercase tracking-widest shadow-xl hover:bg-[#D4AF37] hover:text-[#04120d] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
+            >
+              <Play className="w-4 h-4 fill-current" />
+              {t('hero.btnExplore', 'Explore Competitions')}
+            </button>
 
-          <button
-            onClick={handleScrollToSchedule}
-            className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#0B3D2E]/90 border-2 border-[#D4AF37] text-[#D4AF37] font-serif font-bold text-sm sm:text-base uppercase tracking-widest shadow-xl hover:bg-[#D4AF37] hover:text-[#04120d] transition-all flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
+            <button
+              id="hero-schedule-btn"
+              onClick={handleScrollToSchedule}
+              className="w-full sm:flex-1 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#0B3D2E]/90 border-2 border-[#D4AF37] text-[#D4AF37] font-serif font-bold text-sm sm:text-base uppercase tracking-widest shadow-xl hover:bg-[#D4AF37] hover:text-[#04120d] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
+            >
+              <Calendar className="w-4 h-4" />
+              {language === 'ta' ? 'நிகழ்வு நிரல் காண்க' : 'View Event Schedule'}
+            </button>
+          </div>
+
+          {/* Long Golden Click to Register Bar */}
+          <a
+            id="hero-register-banner-btn"
+            href="https://forms.gle/bsHNv3r6JjnoNkj27"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => sacredAudio.playChime()}
+            className="group relative w-full px-6 sm:px-8 py-4 sm:py-4.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#FFF3C2] to-[#B8860B] border-2 border-[#FFF8DB] text-[#051a12] font-serif font-extrabold text-base sm:text-lg md:text-xl uppercase tracking-wider sm:tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.45)] hover:shadow-[0_0_35px_rgba(255,223,100,0.7)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 min-h-[54px] text-center overflow-hidden block cursor-pointer"
+            title="Open KLESIS 2026 Registration"
           >
-            <Calendar className="w-4 h-4" />
-            {language === 'ta' ? 'நிகழ்வு நிரல் காண்க' : 'View Event Schedule'}
-          </button>
+            {/* Ambient shimmer */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            
+            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-[#04120d] group-hover:scale-110 group-hover:rotate-12 transition-transform shrink-0" />
+            
+            <span className="font-black drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">
+              {language === 'ta' ? 'பதிவு செய்ய இங்கே கிளிக் செய்யவும்' : 'Click to Register'}
+            </span>
+
+            <ExternalLink className="w-5 h-5 text-[#04120d] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+          </a>
         </div>
       </div>
     </section>

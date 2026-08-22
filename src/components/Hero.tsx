@@ -83,19 +83,21 @@ export const Hero: React.FC<HeroProps> = ({ onExploreEvents }) => {
             {t('hero.subTitle', 'Christava Illaignar Iyakkam (CII) of TELC Christ Church Tambaram Presents')}
           </h2>
 
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif font-extrabold tracking-tight text-gold-gradient drop-shadow-[0_10px_20px_rgba(0,0,0,0.9)] my-1.5 sm:my-2">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif font-extrabold tracking-tight text-gold-gradient drop-shadow-[0_4px_16px_rgba(245,158,11,0.5)] my-1.5 sm:my-2">
             {t('hero.mainTitle', 'KLESIS 2026')}
           </h1>
 
-          <div className="text-xs sm:text-2xl font-serif font-semibold text-stone-200 tracking-wider my-2 sm:my-3 flex items-center justify-center gap-1.5 sm:gap-3 px-1">
-            <span className="h-[1px] w-4 sm:w-12 bg-[#D4AF37] shrink-0" />
-            <span className="break-words text-center">{t('hero.themeBadge', 'The Heavenly Calling (KLESIS)')}</span>
-            <span className="h-[1px] w-4 sm:w-12 bg-[#D4AF37] shrink-0" />
+          <div className="text-xs sm:text-2xl font-serif font-semibold text-stone-100 tracking-wider my-2 sm:my-3 flex items-center justify-center gap-1.5 sm:gap-3 px-1">
+            <span className="h-[1px] w-4 sm:w-12 bg-gradient-to-r from-transparent to-[#F59E0B] shrink-0" />
+            <span className="break-words text-center text-[#FEF08A] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] font-bold">
+              {t('hero.themeBadge', 'The Heavenly Calling (KLESIS)')}
+            </span>
+            <span className="h-[1px] w-4 sm:w-12 bg-gradient-to-l from-transparent to-[#F59E0B] shrink-0" />
           </div>
 
-          <p className="max-w-2xl mx-auto text-xs sm:text-base text-stone-300 font-sans italic my-2 sm:my-4 leading-relaxed px-1">
+          <p className="max-w-2xl mx-auto text-xs sm:text-base text-stone-200 font-sans italic my-2 sm:my-4 leading-relaxed px-1">
             “{t('hero.tagline', 'Fight the good fight of the faith. Take hold of the eternal life to which you were called...')}”
-            <span className="block text-[11px] sm:text-xs text-[#D4AF37] not-italic mt-1 font-serif font-medium">
+            <span className="block text-[11px] sm:text-xs text-[#FDE047] font-semibold not-italic mt-1 font-serif">
               — {t('hero.scriptureRef', '1 Timothy 6:12–14')}
             </span>
           </p>

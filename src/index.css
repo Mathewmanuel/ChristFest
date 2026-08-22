@@ -16,12 +16,14 @@
     line-height: 1.6;
   }
 
-  /* Radiant Gold Gradient Typography (Never muddies to brown) */
+  /* Luminous Radiant Gold Typography (Crisp, High-Contrast, Never Brown) */
   .text-gold-gradient {
-    color: #FBBF24;
-    background: linear-gradient(135deg, #FFFDEB 0%, #FDE047 25%, #F59E0B 65%, #EAB308 100%);
+    color: #FDE047;
+    background-image: linear-gradient(180deg, #FFFFFF 0%, #FEF08A 25%, #FBBF24 60%, #F59E0B 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: inline-block;
   }
 
   /* Emerald Gradient Typography */

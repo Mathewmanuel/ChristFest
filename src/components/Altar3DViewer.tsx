@@ -364,17 +364,68 @@ export const Altar3DViewer: React.FC = () => {
     starMesh.position.set(0, 2.85, 0.05);
     emblemGroup.add(starMesh);
 
+    // Function to create a crisp gold inscription texture for 3D banners
+    const createBannerTextTexture = (text: string) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d')!;
+
+      // Radiant Gold Banner Fill
+      const grad = ctx.createLinearGradient(0, 0, 1024, 128);
+      grad.addColorStop(0, '#fef08a');
+      grad.addColorStop(0.3, '#f59e0b');
+      grad.addColorStop(0.7, '#d97706');
+      grad.addColorStop(1, '#fef08a');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1024, 128);
+
+      // Gold Metallic Border
+      ctx.strokeStyle = '#fffbeb';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(4, 4, 1016, 120);
+
+      // Engraved Inscription in Dark Emerald
+      ctx.fillStyle = '#062017';
+      ctx.font = 'bold 52px "Cinzel", "Cinzel Decorative", Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
+      ctx.fillText(text, 512, 64);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    };
+
+    const upperBannerTex = createBannerTextTexture('35th ANNIVERSARY');
+    const lowerBannerTex = createBannerTextTexture('KLESIS • CII 1991 - 2026');
+
+    const upperBannerMat = new THREE.MeshStandardMaterial({
+      map: upperBannerTex,
+      metalness: 0.7,
+      roughness: 0.25,
+    });
+
+    const lowerBannerMat = new THREE.MeshStandardMaterial({
+      map: lowerBannerTex,
+      metalness: 0.7,
+      roughness: 0.25,
+    });
+
     // G. Arc Ribbon Banners
     // Upper Banner "35th ANNIVERSARY"
-    const upperBannerGeo = new THREE.BoxGeometry(2.4, 0.25, 0.08);
-    const upperBanner = new THREE.Mesh(upperBannerGeo, darkGoldMat);
-    upperBanner.position.set(0, 1.35, 0.2);
+    const upperBannerGeo = new THREE.BoxGeometry(2.4, 0.28, 0.08);
+    const upperBanner = new THREE.Mesh(upperBannerGeo, upperBannerMat);
+    upperBanner.position.set(0, 1.35, 0.22);
     emblemGroup.add(upperBanner);
 
     // Lower Banner "KLESIS • CII 1991 - 2026"
-    const lowerBannerGeo = new THREE.BoxGeometry(2.8, 0.3, 0.08);
-    const lowerBanner = new THREE.Mesh(lowerBannerGeo, darkGoldMat);
-    lowerBanner.position.set(0, -1.25, 0.2);
+    const lowerBannerGeo = new THREE.BoxGeometry(2.85, 0.32, 0.08);
+    const lowerBanner = new THREE.Mesh(lowerBannerGeo, lowerBannerMat);
+    lowerBanner.position.set(0, -1.25, 0.22);
     emblemGroup.add(lowerBanner);
 
     logoGroup.add(emblemGroup);
